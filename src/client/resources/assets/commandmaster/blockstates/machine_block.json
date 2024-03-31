@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "commandmaster:block/machine_block",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "commandmaster:block/machine_block",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "commandmaster:block/machine_block"
+    },
+    "facing=south": {
+      "model": "commandmaster:block/machine_block",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "commandmaster:block/machine_block",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "commandmaster:block/machine_block",
+      "y": 270
+    }
+  }
+}

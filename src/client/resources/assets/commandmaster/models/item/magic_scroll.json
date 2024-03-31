@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "commandmaster:item/magic_scroll",
+	"layer1": "commandmaster:item/magic_scroll_overlay"
+  }
+}

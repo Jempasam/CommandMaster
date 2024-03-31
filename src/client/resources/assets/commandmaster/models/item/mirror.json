@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "commandmaster:item/mirror",
+	"layer1": "commandmaster:item/mirror_overlay"
+  }
+}

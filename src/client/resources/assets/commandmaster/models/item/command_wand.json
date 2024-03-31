@@ -1,0 +1,93 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "commandmaster:item/command_wand",
+    "layer1": "commandmaster:item/command_wand_overlay"
+  },
+  "overrides": [
+    {
+      "predicate": {"custom_model_data": 1},
+      "model": "commandmaster:item/book"
+    },
+    {
+      "predicate": {"custom_model_data": 2},
+      "model": "commandmaster:item/circle"
+    },
+    {
+      "predicate": {"custom_model_data": 3},
+      "model": "commandmaster:item/crystal"
+    },
+    {
+      "predicate": {"custom_model_data": 4},
+      "model": "commandmaster:item/diamond"
+    },
+    {
+      "predicate": {"custom_model_data": 5},
+      "model": "commandmaster:item/elemental"
+    },
+    {
+      "predicate": {"custom_model_data": 6},
+      "model": "commandmaster:item/focus"
+    },
+    {
+      "predicate": {"custom_model_data": 7},
+      "model": "commandmaster:item/haunted_crystal"
+    },
+    {
+      "predicate": {"custom_model_data": 8},
+      "model": "commandmaster:item/ingot"
+    },
+    {
+      "predicate": {"custom_model_data": 9},
+      "model": "commandmaster:item/magic_potion"
+    },
+    {
+      "predicate": {"custom_model_data": 10},
+      "model": "commandmaster:item/magic_scroll"
+    },
+    {
+      "predicate": {"custom_model_data": 11},
+      "model": "commandmaster:item/magicball"
+    },
+    {
+      "predicate": {"custom_model_data": 12},
+      "model": "commandmaster:item/mirror"
+    },
+    {
+      "predicate": {"custom_model_data": 13},
+      "model": "commandmaster:item/orb"
+    },
+    {
+      "predicate": {"custom_model_data": 14},
+      "model": "commandmaster:item/pill"
+    },
+    {
+      "predicate": {"custom_model_data": 15},
+      "model": "commandmaster:item/slab"
+    },
+    {
+      "predicate": {"custom_model_data": 16},
+      "model": "commandmaster:item/sphere"
+    },
+    {
+      "predicate": {"custom_model_data": 17},
+      "model": "commandmaster:item/spirit"
+    },
+    {
+      "predicate": {"custom_model_data": 18},
+      "model": "commandmaster:item/sword"
+    },
+	{
+      "predicate": {"custom_model_data": 19},
+      "model": "commandmaster:item/tablet"
+    },
+	{
+      "predicate": {"custom_model_data": 20},
+      "model": "commandmaster:item/vaccin"
+    },
+	{
+      "predicate": {"custom_model_data": 21},
+      "model": "commandmaster:item/activator_wand"
+    }
+  ]
+}

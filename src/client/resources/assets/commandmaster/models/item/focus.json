@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "commandmaster:item/focus",
+	"layer1": "commandmaster:item/focus_overlay"
+  }
+}

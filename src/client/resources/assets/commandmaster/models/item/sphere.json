@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "commandmaster:item/sphere_overlay",
+	"layer1": "commandmaster:item/sphere"
+  }
+}

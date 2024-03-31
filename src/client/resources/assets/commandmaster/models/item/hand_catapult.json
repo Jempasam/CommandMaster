@@ -1,0 +1,26 @@
+{
+    "parent": "item/crossbow",
+    "textures": {
+        "layer0": "commandmaster:item/hand_catapult1"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "pull": 0.33
+            },
+            "model": "commandmaster:item/hand_catapult2"
+        },
+        {
+            "predicate": {
+                "pull": 0.66
+            },
+            "model": "commandmaster:item/hand_catapult3"
+        },
+        {
+            "predicate": {
+                "pull": 0.99
+            },
+            "model": "commandmaster:item/hand_catapult4"
+        }
+    ]
+}

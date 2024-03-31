@@ -1,0 +1,6 @@
+{
+  "item.commandmaster.command_wand": "Command Wand",
+  "item.commandmaster.command_book": "Command Book",
+  "item.commandmaster.writable_command_book": "Writable Command Book",
+  "block.commandmaster.machine_block": "Machine"
+}
