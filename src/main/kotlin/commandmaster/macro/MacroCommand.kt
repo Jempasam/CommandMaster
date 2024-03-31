@@ -141,10 +141,7 @@ data class MacroCommand(val command: String) {
         val CODEC = STRING.xmap({MacroCommand(it)},{it.command})
 
         fun executeMultiline(server: MinecraftServer, context: ServerCommandSource, command: String){
-            val lines=command.split(';')
-            for(line in lines){
-                server.commandManager.executeWithPrefix(context, line.trim())
-            }
+            server.commandManager.executeWithPrefix(context, command)
         }
     }
 }

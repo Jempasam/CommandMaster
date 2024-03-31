@@ -21,7 +21,7 @@ object MacroUtils {
         val state=stack.get(CmdMastComponents.MACRO_STATE) ?: listOf()
         val macro=stack.get(CmdMastComponents.MACRO_HOLDER)?.also {
             tooltip.add(it.textWith(state))
-            tooltip.add(Text.of("(${it.command})"))
+            tooltip.add(Text.of("(${if(it.command.length>40)it.command.take(40)+"..." else it.command})"))
         }
     }
 

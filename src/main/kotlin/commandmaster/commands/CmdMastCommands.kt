@@ -16,14 +16,19 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.block.CommandBlock
 import net.minecraft.block.entity.CommandBlockBlockEntity
 import net.minecraft.command.argument.BlockPosArgumentType
+import net.minecraft.command.argument.BlockStateArgument
+import net.minecraft.command.argument.BlockStateArgumentType
+import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.command.argument.ItemStackArgumentType
 import net.minecraft.item.BookItem
 import net.minecraft.item.WritableBookItem
+import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
 import net.minecraft.util.math.BlockPos
 import java.nio.charset.Charset
+import kotlin.math.max
 
 object CmdMastCommands {
     init{
@@ -84,7 +89,6 @@ object CmdMastCommands {
                     val message=Text.literal("""
                             Create items that run macro commands.
                             Macro commands are normal commands with parameters.
-                            You can put multiple command in one by separating them with a semicolon.
                             The parameters can be one of the following:
                             """.trimIndent())
                     for((key,param) in MacroParamType.TYPES){
@@ -180,9 +184,23 @@ object CmdMastCommands {
                 Text.of("Run a stack of command blocks or machines from the bottom to top, and with the current source(location, entity, etc.).")
             }
 
+            val MULTI=literal<ServerCommandSource>("multi").then(
+                argument<ServerCommandSource,_>("commands",MultiCommandArgumentType).executes{
+                    val commands=it.getArgument("commands",List::class.java) as List<String>
+                    for(command in commands){
+                        println(command)
+                        it.source.server.commandManager.executeWithPrefix(it.source,command)
+                    }
+                    1
+                }
+            ).help{
+                Text.of("Run multiple commands separated by semicolons.")
+            }
+
             disp.register(COMMAND)
             disp.register(FILE)
             disp.register(RUNSTACK)
+            disp.register(MULTI)
         }
     }
 

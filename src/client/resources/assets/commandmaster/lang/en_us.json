@@ -2,5 +2,16 @@
   "item.commandmaster.command_wand": "Command Wand",
   "item.commandmaster.command_book": "Command Book",
   "item.commandmaster.writable_command_book": "Writable Command Book",
-  "block.commandmaster.machine_block": "Machine"
+
+  "example.commandmaster.use_command": "Use /command to create wands or machines",
+  "example.commandmaster.breaker": "Block Breaker",
+  "example.commandmaster.stonifier": "Stonifier",
+  "example.commandmaster.creeper": "Creeper Wand",
+  "example.commandmaster.tnt": "Tnt Wand",
+  "example.commandmaster.fire": "Fire Starter",
+  "example.commandmaster.aspirator": "Aspirator",
+
+  "block.commandmaster.machine_block": "Machine",
+
+  "item_group.commandmaster.command_master":  "Command Master"
 }
