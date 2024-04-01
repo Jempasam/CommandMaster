@@ -12,10 +12,13 @@ import net.minecraft.registry.Registries
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
+import java.util.UUID
 
 interface MacroParamType{
 
     val name: String
+
+    val example: String
 
     val color: Int
 
@@ -27,6 +30,7 @@ interface MacroParamType{
 
     object POSITION: MacroParamType{
         override val name="position"
+        override val example="0 0 0"
         override val color=0xFF0000
         override fun selectAir(player: ServerPlayerEntity) = "${player.pos.x.toInt()} ${player.pos.y.toInt()} ${player.pos.z.toInt()}"
         override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos) = "${pos.x} ${pos.y} ${pos.z}"
@@ -35,6 +39,7 @@ interface MacroParamType{
 
     object SELECTOR: MacroParamType{
         override val name="selector"
+        override val example=UUID.randomUUID().toString()
         override val color=0x0000FF
         override fun selectAir(player: ServerPlayerEntity) = "${player.uuidAsString}"
         override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos) = "${player.uuidAsString}"
@@ -43,14 +48,16 @@ interface MacroParamType{
 
     object DIRECTION: MacroParamType{
         override val name="direction"
+        override val example="0 0"
         override val color=0x00FF00
-        override fun selectAir(player: ServerPlayerEntity) = "~ ~"
+        override fun selectAir(player: ServerPlayerEntity) = "${player.pitch} ${player.yaw}"
         override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos) = "${player.pitch} ${player.yaw}"
         override fun selectEntity(player: ServerPlayerEntity, entity: Entity) = "${player.pitch} ${player.yaw}"
     }
 
     object BLOCK: MacroParamType{
         override val name="block"
+        override val example="minecraft:stone"
         override val color=0xAA6600
         override fun selectAir(player: ServerPlayerEntity): String{
             val item=player.offHandStack.item
@@ -73,6 +80,7 @@ interface MacroParamType{
 
     object ITEM: MacroParamType{
         override val name="item"
+        override val example="minecraft:stick"
         override val color=0x6600AA
         override fun selectAir(player: ServerPlayerEntity): String{
             val item=player.offHandStack.item

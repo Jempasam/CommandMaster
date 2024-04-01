@@ -10,6 +10,7 @@ import net.minecraft.registry.Registry
 object CmdMastArgumentTypes {
 
     val MULTI_COMMAND = register("multi_command", MultiCommandArgumentType.javaClass, MultiCommandArgumentType.Serializer)
+    val MACRO_COMMAND = register("macro", MacroCommandArgumentType.javaClass, MacroCommandArgumentType.Serializer)
 
     fun <Y: ArgumentType<*>, T: ArgumentSerializer<Y,*>> register(id: String, clazz: Class<Y>, type: T): T{
         ArgumentTypeRegistry.registerArgumentType(CommandMaster/id, clazz, type)

@@ -35,7 +35,7 @@ object CmdMastCommands {
         CommandRegistrationCallback.EVENT.register{ disp, reg, man ->
             // Action that give item
             val WAND=literal<ServerCommandSource>("wand").then(
-                argument<ServerCommandSource,_>("macro",StringArgumentType.greedyString()).executes{
+                argument<ServerCommandSource,_>("macro",MacroCommandArgumentType).executes{
                     val player=it.source.player
                     if(player!=null){
                         val stack=CmdMastItems.COMMAND_WAND.defaultStack
@@ -48,7 +48,7 @@ object CmdMastCommands {
             )
             val ITEM=literal<ServerCommandSource>("item").then(
                 argument<ServerCommandSource,_>("item",ItemStackArgumentType.itemStack(reg)).then(
-                    argument<ServerCommandSource,_>("macro",StringArgumentType.greedyString()).executes{
+                    argument<ServerCommandSource,_>("macro",MacroCommandArgumentType).executes{
                         val player=it.source.player
                         if(player!=null){
                             val stack=ItemStackArgumentType.getItemStackArgument(it,"item").createStack(1,true)
@@ -61,7 +61,7 @@ object CmdMastCommands {
                 )
             )
             val MACHINE=literal<ServerCommandSource>("machine").then(
-                argument<ServerCommandSource,_>("macro",StringArgumentType.greedyString()).executes{
+                argument<ServerCommandSource,_>("macro",MacroCommandArgumentType).executes{
                     val player=it.source.player
                     if(player!=null){
                         val stack=CmdMastItems.MACHINE_BLOCK.defaultStack
@@ -73,7 +73,7 @@ object CmdMastCommands {
                 }
             )
             val SHOW=literal<ServerCommandSource>("show").then(
-                argument<ServerCommandSource,_>("macro",StringArgumentType.greedyString()).executes{
+                argument<ServerCommandSource,_>("macro",MacroCommandArgumentType).executes{
                     val macro=MacroCommand(it.getArgument("macro",String::class.java))
                     it.source.sendMessage(macro.text)
                     macro.parameters.size
