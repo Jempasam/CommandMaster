@@ -39,6 +39,7 @@ object CmdMastItemGroup {
             add(CmdMastItems.COMMAND_WAND, "stonifier", 100, 100, 100, "setblock \$p minecraft:stone replace")
             add(CmdMastItems.COMMAND_WAND, "creeper", 0, 255, 0, "summon minecraft:creeper \$p")
             add(CmdMastItems.COMMAND_WAND, "tnt", 255, 0, 0, "summon minecraft:tnt \$p")
+            add(CmdMastItems.COMMAND_WAND, "filler", 255, 100, 0, "fill \$p \$p \$b")
 
             // Machine Block
             add(CmdMastItems.MACHINE_BLOCK, "use_command", -1,-1,-1, null)

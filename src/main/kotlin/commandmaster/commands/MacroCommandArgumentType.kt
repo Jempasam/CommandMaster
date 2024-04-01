@@ -48,11 +48,10 @@ object MacroCommandArgumentType: ArgumentType<String> {
                 stringReader.cursor = builder.start
 
                 // Get commands
-                if(stringReader.remainingLength<=0)return@testgroup
                 val command=stringReader.remaining
 
                 // Last is arg
-                if(command.last()=='$'){
+                if(command.isNotEmpty() && command.last()=='$'){
                     return CompletableFuture.supplyAsync {
                         val builder=builder.createOffset(builder.start+command.length-1)
                         builder.createOffset(command.length-1)
