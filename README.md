@@ -5,6 +5,7 @@ This mod adds numerous useful tools and additional commands.
 ## Macros
 ![Command Wand Give Command](https://github.com/Jempasam/CommandMaster/blob/master/assets/command_show.png?raw=true)
 ![Command Wand Give Command](https://github.com/Jempasam/CommandMaster/blob/master/assets/macro_fill.png?raw=true)
+
 Macros are commands you can put in every command-holding blocks et items of this mod and that contains parameters of different types.
 
 ![Command help](https://github.com/Jempasam/CommandMaster/blob/master/assets/command_help.png?raw=true)
