@@ -1,11 +1,11 @@
 ![Command Master Title](https://github.com/Jempasam/CommandMaster/blob/master/assets/title.png?raw=true)
 ## Description
-This mod add many helpful tools and addition for commands.
+This mod adds numerous useful tools and additional commands.
 
 ## Macros
 ![Command Wand Give Command](https://github.com/Jempasam/CommandMaster/blob/master/assets/command_show.png?raw=true)
 ![Command Wand Give Command](https://github.com/Jempasam/CommandMaster/blob/master/assets/macro_fill.png?raw=true)
-Macros are commands you can put in every command holding blocks et items of this mod and that contains parameters of different types.
+Macros are commands you can put in every command-holding blocks et items of this mod and that contains parameters of different types.
 
 ![Command help](https://github.com/Jempasam/CommandMaster/blob/master/assets/command_help.png?raw=true)
 
@@ -17,7 +17,7 @@ A command wand example.
 ## Command Wand
 ![Command Wand Give Command](https://github.com/Jempasam/CommandMaster/blob/master/assets/command_wand.png?raw=true)
 
-This command give to the caster a wand that fill its macro parameters on click. When all parameters are filled, the command is executed on caster.
+This command provides the caster with a wand that fills its macro parameters upon clicking. Once all parameters are filled, the command is executed on the caster.
 
 ![A command wand](https://github.com/Jempasam/CommandMaster/blob/master/assets/wand.png?raw=true)
 
