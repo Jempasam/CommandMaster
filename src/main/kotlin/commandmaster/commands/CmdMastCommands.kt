@@ -24,6 +24,7 @@ import net.minecraft.item.BookItem
 import net.minecraft.item.WritableBookItem
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.server.command.SetBlockCommand
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
 import net.minecraft.util.math.BlockPos
@@ -33,6 +34,7 @@ import kotlin.math.max
 object CmdMastCommands {
     init{
         CommandRegistrationCallback.EVENT.register{ disp, reg, man ->
+
             // Action that give item
             val WAND=literal<ServerCommandSource>("wand").then(
                 argument<ServerCommandSource,_>("macro",MacroCommandArgumentType).executes{

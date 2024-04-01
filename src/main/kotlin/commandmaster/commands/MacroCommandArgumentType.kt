@@ -1,6 +1,7 @@
 package commandmaster.commands
 
 import com.google.gson.JsonObject
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
@@ -17,6 +18,7 @@ import net.minecraft.command.argument.serialize.ArgumentSerializer
 import net.minecraft.command.argument.serialize.ArgumentSerializer.ArgumentTypeProperties
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.server.function.FunctionLoader
 import java.util.concurrent.CompletableFuture
 
 object MacroCommandArgumentType: ArgumentType<String> {
@@ -33,6 +35,7 @@ object MacroCommandArgumentType: ArgumentType<String> {
             else if(it=='$')afterarg=true
         }
         if(afterarg)throw IllegalArgumentException("Expected macro argument type after macro argument symbol \"$\"")
+
         return ret
     }
 
@@ -87,6 +90,8 @@ object MacroCommandArgumentType: ArgumentType<String> {
         }
         return super.listSuggestions(context, builder)
     }
+
+    override fun getExamples() = listOf("setblock \$p dirt", "fill \$p \$p \$b", "give \$i")
 
     object Properties: ArgumentTypeProperties<MacroCommandArgumentType>{
         override fun createType(commandRegistryAccess: CommandRegistryAccess)= MacroCommandArgumentType
