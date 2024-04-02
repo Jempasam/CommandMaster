@@ -228,7 +228,7 @@ object CmdMastCommands {
             }
 
             disp.register(COMMAND)
-            disp.register(FILE)
+            //disp.register(FILE)
             disp.register(RUNSTACK)
             disp.register(MULTI)
         }
