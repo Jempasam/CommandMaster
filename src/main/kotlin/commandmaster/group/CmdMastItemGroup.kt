@@ -2,10 +2,13 @@ package commandmaster.group
 
 import commandmaster.CommandMaster
 import commandmaster.components.CmdMastComponents
+import commandmaster.enchantments.CmdMastEnchantments
 import commandmaster.item.CmdMastItems
 import commandmaster.macro.MacroCommand
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
+import net.minecraft.command.argument.ItemStackArgumentType
 import net.minecraft.component.DataComponentTypes
+import net.minecraft.component.type.CustomModelDataComponent
 import net.minecraft.component.type.DyedColorComponent
 import net.minecraft.component.type.WrittenBookContentComponent
 import net.minecraft.item.Item
@@ -25,12 +28,12 @@ object CmdMastItemGroup {
         .icon{CmdMastItems.COMMAND_WAND.defaultStack}
         .entries { context, entries ->
 
-            fun add(item: Item, name: String?, red: Int, green: Int, blue: Int, macro: String?) {
+            fun add(item: Item, name: String?, red: Int, green: Int, blue: Int, macro: String?, other: ItemStack.()->Unit={}) {
                 return entries.add(item.defaultStack.apply {
                     if(macro!=null)set(CmdMastComponents.MACRO_HOLDER, MacroCommand(macro))
                     if(name!=null)set(DataComponentTypes.CUSTOM_NAME, CommandMaster.translatable("example", name).styled{it.withItalic(false)})
                     if(red>=0)set(DataComponentTypes.DYED_COLOR, DyedColorComponent(Argb.getArgb(red,green,blue),false))
-                })
+                }.apply { other() })
             }
 
             // Command Wand
@@ -46,6 +49,24 @@ object CmdMastItemGroup {
             add(CmdMastItems.MACHINE_BLOCK, "breaker", 255, 0, 0, "setblock ^ ^ ^1 air destroy")
             add(CmdMastItems.MACHINE_BLOCK, "fire", 255, 100, 0, "setblock ^ ^ ^1 fire keep")
             add(CmdMastItems.MACHINE_BLOCK, "aspirator", 200,210,255, "execute if block ^ ^ ^1 #minecraft:replaceable run multi (clone ^ ^ ^2 ^ ^ ^2 ^ ^ ^1 replace move;playsound minecraft:block.piston.contract ambient @a ~ ~ ~)")
+
+            // Attack
+            add(Items.SADDLE, "saddle", -1,-1,-1, "ride @s mount \$s"){addEnchantment(CmdMastEnchantments.MACRO_ATTACK,1)}
+            add(Items.BOW, "implosion", -1,-1,-1, "summon tnt \$p"){addEnchantment(CmdMastEnchantments.MACRO_ATTACK,1)}
+            add(Items.GOLDEN_AXE, "lightning", -1,-1,-1, "summon lightning_bolt \$p"){addEnchantment(CmdMastEnchantments.MACRO_ATTACK,1)}
+
+            // Tablet
+            add(CmdMastItems.COMMAND_WAND, "xray", 255,255,0, "effect give @e[distance=1..30] minecraft:glowing 10"){
+                set(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelDataComponent(19))
+            }
+
+            add(CmdMastItems.COMMAND_WAND, "snow", 255,255,255, "execute positioned \$p run summon minecraft:snow_golem ~ ~1 ~"){
+                set(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelDataComponent(5))
+            }
+
+            add(CmdMastItems.COMMAND_WAND, "iron", 150,150,150, "execute positioned \$p run summon minecraft:iron_golem ~ ~1 ~"){
+                set(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelDataComponent(5))
+            }
 
             // Book
             val book= Items.WRITTEN_BOOK.defaultStack

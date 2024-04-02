@@ -68,7 +68,9 @@ object CmdMastCommands {
                         else 0
                     }
                 )
-            )
+            ).help {
+                Text.of("Give an item that call a macro when the wearer is attacked with the attacking entity as parameters.")
+            }
             val ATTACK=literal<SCS>("attack").then(
                 argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
                     argument<SCS,_>("macro",MacroCommandArgumentType).executes{
@@ -83,7 +85,9 @@ object CmdMastCommands {
                         else 0
                     }
                 )
-            )
+            ).help {
+                Text.of("Give an item that call a macro a attack with attacked entity as parameters.")
+            }
             val MACHINE=literal<SCS>("machine").then(
                 argument<SCS,_>("macro",MacroCommandArgumentType).executes{
                     val player=it.source.player

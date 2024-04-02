@@ -23,7 +23,6 @@ object MacroUtils {
         val state=stack.get(CmdMastComponents.MACRO_STATE) ?: listOf()
         val macro=stack.get(CmdMastComponents.MACRO_HOLDER)?.also { macro ->
             tooltip.add(macro.textWith(state).overflow(40,"...").styled{it.withItalic(false)})
-            tooltip.add(Text.of(macro.command.overflow(40,"...")))
         }
     }
 

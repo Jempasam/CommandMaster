@@ -11,6 +11,12 @@
   "example.commandmaster.fire": "Fire Starter",
   "example.commandmaster.aspirator": "Aspirator",
   "example.commandmaster.filler": "Filler",
+  "example.commandmaster.xray": "XRay Tablet",
+  "example.commandmaster.snow": "Snow Invocation",
+  "example.commandmaster.iron": "Iron Invocation",
+  "example.commandmaster.implosion": "Implosion Bow",
+  "example.commandmaster.lightning": "Lightning Axe",
+  "example.commandmaster.saddle": "Magic Saddle",
 
   "block.commandmaster.machine_block": "Machine",
 

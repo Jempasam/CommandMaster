@@ -134,6 +134,15 @@ data class MacroCommand(val command: String): TooltipAppender {
         return result
     }
 
+    val colored_command: MutableText get(){
+        val result= Text.empty()
+        visit(
+            {part-> result.append(Text.literal(part))},
+            {param-> result.append(Text.literal("$${MacroParamType.TYPES.getKey(param)}").withColor(param.color))}
+        )
+        return result
+    }
+
     val text: MutableText get(){
         val result= Text.empty()
         visit(
@@ -145,8 +154,8 @@ data class MacroCommand(val command: String): TooltipAppender {
 
     override fun appendTooltip(textConsumer: Consumer<Text>, context: TooltipContext) {
         if(context.isAdvanced){
-            textConsumer.accept(text.overflow(40,"...").styled{it.withItalic(false)})
-            textConsumer.accept(Text.of(command.overflow(40,"...")))
+            //textConsumer.accept(text.overflow(40,"...").styled{it.withItalic(false)})
+            textConsumer.accept(colored_command.overflow(40,"..."))
         }
     }
 

@@ -30,7 +30,7 @@ interface MacroParamType{
         override val color=0xFF0000
         override fun selectAir(player: LivingEntity) = "${player.pos.x.toInt()} ${player.pos.y.toInt()} ${player.pos.z.toInt()}"
         override fun selectBlock(player: LivingEntity, world: ServerWorld, pos: BlockPos) = "${pos.x} ${pos.y} ${pos.z}"
-        override fun selectEntity(player: LivingEntity, entity: Entity) = "${player.pos.x.toInt()} ${player.pos.y.toInt()} ${player.pos.z.toInt()}"
+        override fun selectEntity(player: LivingEntity, entity: Entity) = "${entity.pos.x.toInt()} ${entity.pos.y.toInt()} ${entity.pos.z.toInt()}"
     }
 
     object SELECTOR: MacroParamType{
