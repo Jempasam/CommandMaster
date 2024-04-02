@@ -1,15 +1,11 @@
 package commandmaster.macro
 
 import commandmaster.utils.biMapOf
-import net.minecraft.block.AnvilBlock
-import net.minecraft.block.EnchantingTableBlock
-import net.minecraft.block.entity.EnchantingTableBlockEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Items
 import net.minecraft.registry.Registries
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import java.util.UUID
@@ -22,53 +18,53 @@ interface MacroParamType{
 
     val color: Int
 
-    fun selectAir(player: ServerPlayerEntity): String
+    fun selectAir(player: LivingEntity): String
 
-    fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos): String
+    fun selectBlock(player: LivingEntity, world: ServerWorld, pos: BlockPos): String
 
-    fun selectEntity(player: ServerPlayerEntity, entity: Entity): String
+    fun selectEntity(player: LivingEntity, entity: Entity): String
 
     object POSITION: MacroParamType{
         override val name="position"
         override val example="0 0 0"
         override val color=0xFF0000
-        override fun selectAir(player: ServerPlayerEntity) = "${player.pos.x.toInt()} ${player.pos.y.toInt()} ${player.pos.z.toInt()}"
-        override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos) = "${pos.x} ${pos.y} ${pos.z}"
-        override fun selectEntity(player: ServerPlayerEntity, entity: Entity) = "${player.pos.x.toInt()} ${player.pos.y.toInt()} ${player.pos.z.toInt()}"
+        override fun selectAir(player: LivingEntity) = "${player.pos.x.toInt()} ${player.pos.y.toInt()} ${player.pos.z.toInt()}"
+        override fun selectBlock(player: LivingEntity, world: ServerWorld, pos: BlockPos) = "${pos.x} ${pos.y} ${pos.z}"
+        override fun selectEntity(player: LivingEntity, entity: Entity) = "${player.pos.x.toInt()} ${player.pos.y.toInt()} ${player.pos.z.toInt()}"
     }
 
     object SELECTOR: MacroParamType{
         override val name="selector"
         override val example=UUID.randomUUID().toString()
         override val color=0x0000FF
-        override fun selectAir(player: ServerPlayerEntity) = "${player.uuidAsString}"
-        override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos) = "${player.uuidAsString}"
-        override fun selectEntity(player: ServerPlayerEntity, entity: Entity) = entity.uuidAsString
+        override fun selectAir(player: LivingEntity) = player.uuidAsString
+        override fun selectBlock(player: LivingEntity, world: ServerWorld, pos: BlockPos) = player.uuidAsString
+        override fun selectEntity(player: LivingEntity, entity: Entity) = entity.uuidAsString
     }
 
     object DIRECTION: MacroParamType{
         override val name="direction"
         override val example="0 0"
         override val color=0x00FF00
-        override fun selectAir(player: ServerPlayerEntity) = "${player.pitch} ${player.yaw}"
-        override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos) = "${player.pitch} ${player.yaw}"
-        override fun selectEntity(player: ServerPlayerEntity, entity: Entity) = "${player.pitch} ${player.yaw}"
+        override fun selectAir(player: LivingEntity) = "${player.pitch} ${player.yaw}"
+        override fun selectBlock(player: LivingEntity, world: ServerWorld, pos: BlockPos) = "${player.pitch} ${player.yaw}"
+        override fun selectEntity(player: LivingEntity, entity: Entity) = "${player.pitch} ${player.yaw}"
     }
 
     object BLOCK: MacroParamType{
         override val name="block"
         override val example="minecraft:stone"
         override val color=0xAA6600
-        override fun selectAir(player: ServerPlayerEntity): String{
+        override fun selectAir(player: LivingEntity): String{
             val item=player.offHandStack.item
             if(item is BlockItem)return Registries.BLOCK.getId(item.block).toString()
             return "minecraft:air"
         }
 
-        override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos)
+        override fun selectBlock(player: LivingEntity, world: ServerWorld, pos: BlockPos)
                 = Registries.BLOCK.getId(world.getBlockState(pos).block).toString()
 
-        override fun selectEntity(player: ServerPlayerEntity, entity: Entity): String{
+        override fun selectEntity(player: LivingEntity, entity: Entity): String{
             if(entity !is LivingEntity)return "minecraft:air"
             val item=entity.mainHandStack.item
             if(item is BlockItem)return Registries.BLOCK.getId(item.block).toString()
@@ -82,18 +78,18 @@ interface MacroParamType{
         override val name="item"
         override val example="minecraft:stick"
         override val color=0x6600AA
-        override fun selectAir(player: ServerPlayerEntity): String{
+        override fun selectAir(player: LivingEntity): String{
             val item=player.offHandStack.item
             return Registries.ITEM.getId(item).toString()
         }
 
-        override fun selectBlock(player: ServerPlayerEntity, world: ServerWorld, pos: BlockPos): String{
+        override fun selectBlock(player: LivingEntity, world: ServerWorld, pos: BlockPos): String{
             val block=world.getBlockState(pos).block
             if(block is BlockItem)return Registries.ITEM.getId(block).toString()
             return "minecraft:air"
         }
 
-        override fun selectEntity(player: ServerPlayerEntity, entity: Entity): String{
+        override fun selectEntity(player: LivingEntity, entity: Entity): String{
             if(entity !is LivingEntity)return "minecraft:air"
             val item=entity.mainHandStack.item
             if(item!== Items.AIR)return Registries.ITEM.getId(item).toString()

@@ -14,5 +14,8 @@
 
   "block.commandmaster.machine_block": "Machine",
 
-  "item_group.commandmaster.command_master":  "Command Master"
+  "item_group.commandmaster.command_master":  "Command Master";
+
+  "enchantment.commandmaster.macro_attack": "Magic Attack",
+  "enchantment.commandmaster.macro_thorns": "Magic Defense"
 }

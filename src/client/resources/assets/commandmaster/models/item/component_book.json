@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+	"layer1": "commandmaster:item/component_book_overlay",
+    "layer0": "commandmaster:item/component_book"
+  }
+}

@@ -1,6 +1,5 @@
 package commandmaster.item
 
-import com.mojang.authlib.minecraft.client.MinecraftClient
 import commandmaster.components.CmdMastComponents.MACRO_HOLDER
 import commandmaster.components.CmdMastComponents.MACRO_STATE
 import commandmaster.macro.MacroCommand
@@ -10,20 +9,16 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.BundleItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.screen.slot.Slot
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.function.Macro
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.*
-import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
-import kotlin.math.min
 
 class CommandWandItem(settings: Settings) : Item(settings) {
 

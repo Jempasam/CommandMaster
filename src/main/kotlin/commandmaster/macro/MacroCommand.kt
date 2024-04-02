@@ -6,13 +6,17 @@ import commandmaster.codec.getWith
 import commandmaster.codec.of
 import com.mojang.serialization.Codec.*
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import commandmaster.helper.overflow
 import io.netty.handler.codec.CodecException
+import net.minecraft.client.item.TooltipContext
 import net.minecraft.command.CommandSource
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Items
+import net.minecraft.item.TooltipAppender
 import net.minecraft.registry.Registries
+import net.minecraft.screen.AnvilScreenHandler
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.network.ServerPlayerEntity
@@ -20,13 +24,14 @@ import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
+import java.util.function.Consumer
 import kotlin.math.min
 
 /**
  * Represent a macro command.
  * Per example: "setblock $p minecraft:dirt" mean "set a block of dirt at a parametrized position"
  */
-data class MacroCommand(val command: String) {
+data class MacroCommand(val command: String): TooltipAppender {
 
     val parts: List<String>
     val parameters: List<MacroParamType>
@@ -75,6 +80,15 @@ data class MacroCommand(val command: String) {
             on_part(parts[i+1])
             i++
         }
+    }
+
+    inline fun<T> map(mapper: (MacroParamType,Int)->T): MutableList<T>{
+        val ret= mutableListOf<T>()
+        for(i in parameters.indices){
+            val type=parameters[i]
+            ret.add(mapper(type,i))
+        }
+        return ret
     }
 
     fun build(params: List<String>): String?{
@@ -127,6 +141,13 @@ data class MacroCommand(val command: String) {
             {param-> result.append(Text.literal("$${param.name}").withColor(param.color))}
         )
         return result
+    }
+
+    override fun appendTooltip(textConsumer: Consumer<Text>, context: TooltipContext) {
+        if(context.isAdvanced){
+            textConsumer.accept(text.overflow(40,"...").styled{it.withItalic(false)})
+            textConsumer.accept(Text.of(command.overflow(40,"...")))
+        }
     }
 
 

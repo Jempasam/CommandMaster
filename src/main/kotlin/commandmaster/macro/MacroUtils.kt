@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.world.World
+import java.util.function.Consumer
 
 object MacroUtils {
     fun getName(stack: ItemStack): MutableText {

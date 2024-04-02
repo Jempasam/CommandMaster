@@ -12,10 +12,15 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroParamType
+import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricEntityTypeBuilder.Mob
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.command.CommandSource
 import net.minecraft.command.argument.serialize.ArgumentSerializer
 import net.minecraft.command.argument.serialize.ArgumentSerializer.ArgumentTypeProperties
+import net.minecraft.enchantment.Enchantments
+import net.minecraft.entity.mob.MobEntity
+import net.minecraft.entity.mob.ZombieEntity
+import net.minecraft.item.ArmorItem
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.function.FunctionLoader
@@ -59,6 +64,7 @@ object MacroCommandArgumentType: ArgumentType<String> {
                         builder.build()
                     }
                 }
+                Enchantments.THORNS
 
                 // Get completions
                 if(source is ServerCommandSource){

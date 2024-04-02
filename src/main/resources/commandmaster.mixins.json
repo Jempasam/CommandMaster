@@ -3,7 +3,7 @@
 	"package": "commandmaster.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+      "TooltipMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
