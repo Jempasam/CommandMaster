@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 @Mixin(ItemStack.class)
@@ -26,7 +27,10 @@ public abstract class TooltipMixin {
 
 	@ModifyReturnValue(at=@At("RETURN"), method="getTooltip")
 	public List<Text> modifyGetTooltip(List<Text> original, @Local(argsOnly = true) TooltipContext context) {
-		appendTooltip(CmdMastComponents.INSTANCE.getMACRO_HOLDER(), t->original.add(1,t), context);
+		var index= new AtomicInteger(1);
+		Consumer<Text> appender = text->original.add(index.getAndIncrement(),text);
+		appendTooltip(CmdMastComponents.INSTANCE.getMACRO_HOLDER(), appender, context);
+		appendTooltip(CmdMastComponents.INSTANCE.getUPGRADER_COMPONENT(), appender, context);
 		return original;
 	}
 }

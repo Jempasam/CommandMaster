@@ -12,15 +12,28 @@ import commandmaster.files.FileSystem
 import commandmaster.item.CmdMastItems
 import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroParamType
+import commandmaster.utils.nbt.toText
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.block.entity.CommandBlockBlockEntity
 import net.minecraft.command.argument.BlockPosArgumentType
+import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.command.argument.ItemStackArgumentType
+import net.minecraft.command.argument.RegistryEntryArgumentType
+import net.minecraft.command.argument.RegistryKeyArgumentType
+import net.minecraft.component.Component
+import net.minecraft.component.DataComponentType
 import net.minecraft.enchantment.Enchantment
+import net.minecraft.nbt.NbtOps
+import net.minecraft.registry.Registries
+import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.RegistryKeys
+import net.minecraft.screen.AnvilScreenHandler
+import net.minecraft.screen.EnchantmentScreenHandler
 import net.minecraft.server.command.ServerCommandSource as SCS
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
 import java.nio.charset.Charset
+import kotlin.jvm.optionals.getOrNull
 
 
 object CmdMastCommands {
@@ -108,6 +121,31 @@ object CmdMastCommands {
                 }
             )
 
+            val EXAMPLE=literal<SCS>("example").executes{
+                val player=it.source.player
+                if(player!=null){
+                    val stack=player.mainHandStack
+                    val sb=Text.literal("[${Registries.ITEM.getId(stack.item)}]{\n")
+                    for(comp in stack.components){
+                        fun<T> apply(comp: Component<T>){
+                            val nbt=comp.type.codecOrThrow.encodeStart(NbtOps.INSTANCE,comp.value)
+                            val key=Registries.DATA_COMPONENT_TYPE.getId(comp.type)
+                            sb.append("  [$key]: ").append(nbt.result().getOrNull()?.toText(2)?:Text.literal("null")).append("\n")
+                        }
+                        apply(comp)
+                    }
+                    sb.append("}[ ]")
+                    it.source.sendMessage(sb)
+                    1
+                }
+                else{
+                    it.source.sendError(Text.literal("Need Player!"))
+                    0
+                }
+            }.help {
+                Text.of("Show the components of the item in the main hand of the player. Use it to see how the example items are made.")
+            }
+
             val COMMAND= literal<SCS>("command").requires {it.hasPermissionLevel(2)}
                 .then(WAND)
                 .then(SHOW)
@@ -115,6 +153,7 @@ object CmdMastCommands {
                 .then(ITEM)
                 .then(THORNS)
                 .then(ATTACK)
+                .then(EXAMPLE)
                 .help {
                     val message=Text.literal("""
                             Create items that run macro commands.

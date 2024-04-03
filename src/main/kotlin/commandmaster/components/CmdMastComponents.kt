@@ -25,6 +25,12 @@ object CmdMastComponents {
      */
     val IS_SHOOTABLE= register<UnitJ>("is_shootable"){ codec(Codec.unit(UnitJ.INSTANCE)) }
 
+    /**
+     * Upgrader component, store the target and the components to apply.
+     * An upgrader contains components to apply to an item when it is upgraded.
+     */
+    val UPGRADER_COMPONENT= register<UpgraderComponent>("upgrader_component"){ codec(UpgraderComponent.CODEC) }
+
     private fun <T> register(id: String, op: DataComponentType.Builder<T>.()->Unit)=
         Registry.register(
             Registries.DATA_COMPONENT_TYPE,

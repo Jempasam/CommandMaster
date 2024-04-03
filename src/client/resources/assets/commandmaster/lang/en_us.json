@@ -18,9 +18,22 @@
   "example.commandmaster.lightning": "Lightning Axe",
   "example.commandmaster.saddle": "Magic Saddle",
 
+  "example.commandmaster.one_shot": "Book of Death",
+  "example.commandmaster.one_shot.desc": "One Shot",
+  "example.commandmaster.pig": "Book of Bacon",
+  "example.commandmaster.pig.desc": "Piggyfier",
+  "example.commandmaster.slowness": "Book of Slowness",
+  "example.commandmaster.slowness.desc": "Slowness",
+  "example.commandmaster.poisoned": "Book of Poison",
+  "example.commandmaster.poisoned.desc": "Poisoned",
+  "example.commandmaster.edible": "Book of Food",
+  "example.commandmaster.edible.desc": "Edible",
+  "example.commandmaster.flint": "Sharpening Flint",
+  "example.commandmaster.flint.desc": "Sharpen anything",
+
   "block.commandmaster.machine_block": "Machine",
 
-  "item_group.commandmaster.command_master":  "Command Master";
+  "item_group.commandmaster.command_master":  "Command Master",
 
   "enchantment.commandmaster.macro_attack": "Magic Attack",
   "enchantment.commandmaster.macro_thorns": "Magic Defense"
