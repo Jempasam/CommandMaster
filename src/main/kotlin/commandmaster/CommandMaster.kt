@@ -9,6 +9,7 @@ import commandmaster.enchantments.CmdMastEnchantments
 import commandmaster.group.CmdMastItemGroup
 import commandmaster.item.CmdMastItems
 import net.fabricmc.api.ModInitializer
+import net.minecraft.entity.mob.ZombieEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text

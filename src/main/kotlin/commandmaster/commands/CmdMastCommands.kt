@@ -12,12 +12,15 @@ import commandmaster.files.FileSystem
 import commandmaster.item.CmdMastItems
 import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroParamType
+import commandmaster.network.NbtFetcher
 import commandmaster.utils.nbt.toText
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.block.entity.CommandBlockBlockEntity
 import net.minecraft.command.argument.BlockPosArgumentType
 import net.minecraft.command.argument.EntityArgumentType
+import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.command.argument.ItemStackArgumentType
+import net.minecraft.command.argument.NbtPathArgumentType
 import net.minecraft.command.argument.RegistryEntryArgumentType
 import net.minecraft.command.argument.RegistryKeyArgumentType
 import net.minecraft.component.Component
@@ -29,9 +32,13 @@ import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.screen.AnvilScreenHandler
 import net.minecraft.screen.EnchantmentScreenHandler
+import net.minecraft.server.command.DataCommand
+import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.command.ServerCommandSource as SCS
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
+import net.minecraft.util.Identifier
+import java.net.URI
 import java.nio.charset.Charset
 import kotlin.jvm.optionals.getOrNull
 
@@ -266,7 +273,47 @@ object CmdMastCommands {
                 Text.of("Run multiple commands separated by semicolons.")
             }
 
+            val FETCHNBT=literal<SCS>("fetchnbt").then(
+                argument<SCS,_>("uri",StringArgumentType.string()).then(
+                    argument<SCS,_>("storage", IdentifierArgumentType.identifier()).then(
+                        argument<SCS,_>("target",NbtPathArgumentType.nbtPath()).then(
+                            argument<SCS,_>("callback",MacroCommandArgumentType).executes com@{
+                                val path = StringArgumentType.getString(it, "uri")
+                                val storage = IdentifierArgumentType.getIdentifier(it, "storage")
+                                val target= NbtPathArgumentType.getNbtPath(it, "target")
+                                val macro= it.getArgument("callback",String::class.java)
+
+                                // Parse macro
+                                val command=MacroCommand(macro).build(listOf()) ?: run{it.source.sendError(Text.of("Invalid macro!")); return@com 0}
+
+                                // Send
+                                val uri= runCatching { URI.create(path) }.getOrNull() ?: run{it.source.sendError(Text.of("Invalid URI!")); return@com 0}
+                                NbtFetcher.fetchNbt(uri).thenApply {result ->
+                                    if(result.isFailure)it.source.sendError(Text.of("Fetch Error: ${result.exceptionOrNull()?.message}"))
+                                    else{
+                                        val storagedata=it.source.server.dataCommandStorage.get(storage)
+                                        target.put(storagedata,result.getOrThrow())
+                                        it.source.server.commandManager.executeWithPrefix(it.source,command)
+                                        it.source.server.dataCommandStorage.set(storage,storagedata)
+                                    }
+                                }
+                                1
+                            }
+                        )
+                    )
+                )
+            ).help{
+                Text.of("""
+                    Fetch the nbt on internet and save it into a storage.
+                    <uri> is the uri of the nbt file.
+                    <storage> is the storage identifer to save the nbt.
+                    <target> is the path to save the nbt in the storage.
+                    <callback> is the macro to run after the nbt is fetched.
+                    """)
+            }
+
             disp.register(COMMAND)
+            disp.register(FETCHNBT)
             //disp.register(FILE)
             disp.register(RUNSTACK)
             disp.register(MULTI)

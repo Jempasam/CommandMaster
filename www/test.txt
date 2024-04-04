@@ -1,0 +1,1 @@
+{prout:"Part", truc:12, cacalist:["chameau","chevre","cochon","vach"], enchantment:{"feu":1,"light":4}}
