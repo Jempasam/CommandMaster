@@ -14,6 +14,8 @@ import net.minecraft.enchantment.Enchantment
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
@@ -58,4 +60,14 @@ class ComponentsBuilder(val stack: Target){
     }
 
     fun giving(builder: ComponentsBuilder.()->Unit) = giving(null, builder)
+
+    fun entity(entity: NbtCompound) = stack.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entity))
+
+    fun entity(vararg pairs: Pair<String, NbtElement>) = entity(nbt(*pairs))
+
+    companion object{
+        fun stack(target: ItemStack) = ComponentsBuilder(ItemStackTarget(target))
+
+        fun changes(target: ComponentChanges.Builder) = ComponentsBuilder(ChangesTarget(target))
+    }
 }

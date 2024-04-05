@@ -8,6 +8,7 @@ import commandmaster.enchantments.CmdMastEnchantments.MACRO_ATTACK
 import commandmaster.item.CmdMastItems
 import commandmaster.macro.MacroCommand
 import commandmaster.utils.builders.ComponentsBuilder
+import commandmaster.utils.builders.nbt
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.minecraft.command.argument.ItemStackArgumentType
@@ -27,6 +28,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.item.Items.*
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.registry.tag.ItemTags
@@ -67,9 +69,9 @@ object CmdMastItemGroup {
             add(CmdMastItems.MACHINE_BLOCK){ name("aspirator"); color(200,210,255); macro("execute if block ^ ^ ^1 #minecraft:replaceable run multi (clone ^ ^ ^2 ^ ^ ^2 ^ ^ ^1 replace move;playsound minecraft:block.piston.contract ambient @a ~ ~ ~)") }
 
             // Attack
-            add(Items.SADDLE){ name("saddle"); macro("ride @s mount \$s"); ench(MACRO_ATTACK to 1) }
-            add(Items.BOW){ name("implosion"); macro("summon tnt \$p"); ench(MACRO_ATTACK to 1) }
-            add(Items.GOLDEN_AXE){ name("lightning"); macro("summon lightning_bolt \$p"); ench(MACRO_ATTACK to 1) }
+            add(SADDLE){ name("saddle"); macro("ride @s mount \$s"); ench(MACRO_ATTACK to 1) }
+            add(BOW){ name("implosion"); macro("summon tnt \$p"); ench(MACRO_ATTACK to 1) }
+            add(GOLDEN_AXE){ name("lightning"); macro("summon lightning_bolt \$p"); ench(MACRO_ATTACK to 1) }
 
             // Tablet
             add(CmdMastItems.COMMAND_WAND){ name("xray"); color(255,255,0); model(19); macro("effect give @e[distance=1..30] minecraft:glowing 10") }
@@ -77,7 +79,7 @@ object CmdMastItemGroup {
             add(CmdMastItems.COMMAND_WAND){ name("iron"); color(150,150,150); model(5); macro("execute positioned \$p run summon minecraft:iron_golem ~ ~1 ~") }
 
             // Enchanted Book
-            add(Items.ENCHANTED_BOOK){
+            add(ENCHANTED_BOOK){
                 name("one_shot")
                 lore("one_shot.desc")
                 giving(ItemTags.WEAPON_ENCHANTABLE){
@@ -87,7 +89,7 @@ object CmdMastItemGroup {
                 }
             }
 
-            add(Items.ENCHANTED_BOOK){
+            add(ENCHANTED_BOOK){
                 name("pig")
                 lore("pig.desc")
                 giving(ItemTags.WEAPON_ENCHANTABLE){
@@ -97,7 +99,7 @@ object CmdMastItemGroup {
                 }
             }
 
-            add(Items.ENCHANTED_BOOK){
+            add(ENCHANTED_BOOK){
                 name("slowness")
                 lore("slowness.desc")
                 giving(ItemTags.WEAPON_ENCHANTABLE){
@@ -107,7 +109,7 @@ object CmdMastItemGroup {
                 }
             }
 
-            add(Items.ENCHANTED_BOOK){
+            add(ENCHANTED_BOOK){
                 name("poisoned")
                 lore("poisoned.desc")
                 giving(ItemTags.WEAPON_ENCHANTABLE){
@@ -117,7 +119,7 @@ object CmdMastItemGroup {
                 }
             }
 
-            add(Items.ENCHANTED_BOOK){
+            add(ENCHANTED_BOOK){
                 name("edible")
                 lore("edible.desc")
                 giving{
@@ -126,7 +128,7 @@ object CmdMastItemGroup {
                 }
             }
 
-            add(Items.FLINT){
+            add(FLINT){
                 name("flint")
                 lore("flint.desc")
                 giving{
@@ -134,8 +136,49 @@ object CmdMastItemGroup {
                 }
             }
 
+            // Eggs
+            fun creeper(egg: Item, name: String, color: Int, macro: String) = add(egg) {
+                name(CommandMaster.translatable("example","creeper_$name").append(" ").append(EGG.name))
+                lore("creeper_$name.desc")
+                entity(
+                    "id" to "commandmaster:macro_creeper".nbt,
+                    "color" to nbt(color),
+                    "macro" to macro.nbt
+                )
+            }
+
+            creeper(BLAZE_SPAWN_EGG, "lightning", -1188790,
+                "summon lightning_bolt"
+            )
+
+            creeper(FROG_SPAWN_EGG, "fire", -1674473,
+                "summon minecraft:fireball ~ ~ ~ {Motion:[0.0,-1.0,0.0],ExplosionPower:3}"
+            )
+
+            creeper(ZOMBIE_HORSE_SPAWN_EGG, "poison", -11112428,
+                "multi (effect give @e[distance=..3] minecraft:poison 20 0 ; particle minecraft:dust 0 0.5 0 3 ~ ~ ~ 1.5 1.5 1.5 1 100)"
+            )
+
+            creeper(GHAST_SPAWN_EGG, "web", -2697514,
+                "fill ~-1 ~-1 ~-1 ~1 ~1 ~1 minecraft:cobweb replace #replaceable"
+            )
+
+            creeper(ZOMBIE_SPAWN_EGG, "zombie", -11907030,
+                "multi (summon zombie;summon skeleton;summon zombie;summon zombie)"
+            )
+
+            creeper(
+                ENDERMAN_SPAWN_EGG, "dragon", -4914979,
+                "summon dragon_fireball ~ ~ ~ {Motion:[0.,-1.,0.]}"
+            )
+
+            creeper(
+                CHICKEN_SPAWN_EGG, "firework", -1857861,
+                "multi (particle minecraft:firework ~ ~1 ~ 0 0 0 0.2 300 ;particle minecraft:flash)"
+            )
+
             // Book
-            val book= Items.WRITTEN_BOOK.defaultStack
+            val book= WRITTEN_BOOK.defaultStack
             book.set(DataComponentTypes.WRITTEN_BOOK_CONTENT, WrittenBookContentComponent(
                 RawFilteredPair.of("Small Guide of Command Master"),
                 "Jempasam",

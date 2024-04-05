@@ -4,6 +4,7 @@ import commandmaster.block.CmdMastBlocks
 import commandmaster.color.DyableBlockColorProvider
 import commandmaster.color.DyableItemColorProvider
 import commandmaster.commands.CmdMastClientCommands
+import commandmaster.entityrenderer.CmdMastEntityRenderers
 import commandmaster.item.CmdMastItems
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
@@ -33,6 +34,9 @@ object CommandMasterClient : ClientModInitializer {
 
 		// BlockDisplay
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped(), CmdMastBlocks.MACHINE_BLOCK)
+
+		// Entity Renderers
+		CmdMastEntityRenderers
 
 		CmdMastClientCommands
 	}

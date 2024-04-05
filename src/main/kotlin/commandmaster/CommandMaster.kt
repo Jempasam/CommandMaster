@@ -6,6 +6,7 @@ import commandmaster.commands.CmdMastArgumentTypes
 import commandmaster.commands.CmdMastCommands
 import commandmaster.components.CmdMastComponents
 import commandmaster.enchantments.CmdMastEnchantments
+import commandmaster.entity.CmdMastEntities
 import commandmaster.group.CmdMastItemGroup
 import commandmaster.item.CmdMastItems
 import net.fabricmc.api.ModInitializer
@@ -29,6 +30,7 @@ object CommandMaster : ModInitializer {
 		CmdMastItemGroup
 		CmdMastArgumentTypes
 		CmdMastEnchantments
+		CmdMastEntities
 	}
 
 	/* MODID */

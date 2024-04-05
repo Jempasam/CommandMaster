@@ -34,6 +34,7 @@
 			}
 		]
 	},
+	"accessWidener": "commandmaster.accesswidener",
 	"mixins": [
 		"commandmaster.mixins.json",
 		{
