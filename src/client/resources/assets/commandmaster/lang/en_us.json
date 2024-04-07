@@ -45,6 +45,8 @@
   "example.commandmaster.creeper_dragon.desc" : "A creeper that explode into dragon breath.",
   "example.commandmaster.creeper_firework" : "Firework Creeper",
   "example.commandmaster.creeper_firework.desc" : "A creeper that explode into a firework.",
+  "example.commandmaster.creeper_super" : "Super Creeper",
+  "example.commandmaster.creeper_super.desc" : "A creeper that explode many exploding bats.",
 
   "example.commandmaster.team_blue": "Blue Team",
   "example.commandmaster.team_blue.desc": "Join the sea blue team",
@@ -54,6 +56,8 @@
   "example.commandmaster.team_green.desc": "Join the great green team",
   "example.commandmaster.team_yellow": "Yellow Team",
   "example.commandmaster.team_yellow.desc": "Join the youpie yellow team",
+  "example.commandmaster.team_none": "No Team",
+  "example.commandmaster.team_none.desc": "Exit the team",
 
   "block.commandmaster.machine_block": "Machine",
 

@@ -181,6 +181,11 @@ object CmdMastItemGroup {
                 "multi (particle minecraft:firework ~ ~1 ~ 0 0 0 0.2 300 ;particle minecraft:flash)"
             )
 
+            creeper(
+                SPIDER_SPAWN_EGG, "super", -11532537,
+                "repeat 5 summon minecraft:bat ~ ~ ~ {Passengers:[{id:\"tnt\",fuse:200}]}"
+            )
+
             // Team
             fun team(name: String, color: Formatting){
                 add(COMMAND_WAND){
@@ -196,6 +201,14 @@ object CmdMastItemGroup {
             team("blue", Formatting.BLUE)
             team("green", Formatting.GREEN)
             team("yellow", Formatting.YELLOW)
+
+            add(COMMAND_WAND){
+                name("team_none")
+                model(10)
+                color(DyeColor.WHITE.fireworkColor)
+                lore("team_none.desc")
+                macro("team leave \$s")
+            }
 
             // Book
             val book= WRITTEN_BOOK.defaultStack

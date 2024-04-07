@@ -1,5 +1,6 @@
 package commandmaster.commands
 
+import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.*
@@ -263,6 +264,12 @@ object CmdMastCommands {
                 Text.of("Run multiple commands separated by semicolons.")
             }
 
+            val REPEAT= literal<SCS>("repeat").then(
+                argument<SCS,_>("count",IntegerArgumentType.integer(1)).fork(disp.root){ context ->
+                    List(IntegerArgumentType.getInteger(context,"count")){context.source}
+                }
+            )
+
             val FETCHNBT=literal<SCS>("fetchnbt").then(
                 argument<SCS,_>("uri",StringArgumentType.string()).then(
                     argument<SCS,_>("storage", IdentifierArgumentType.identifier()).then(
@@ -304,6 +311,7 @@ object CmdMastCommands {
 
             disp.register(COMMAND)
             disp.register(FETCHNBT)
+            disp.register(REPEAT)
             //disp.register(FILE)
             disp.register(RUNSTACK)
             disp.register(MULTI)
