@@ -6,6 +6,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.*
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.*
 import com.mojang.brigadier.context.CommandContext
 import commandmaster.blockentity.FullComponentBlockEntity
+import commandmaster.commands.arguments.MacroCommandArgumentType
+import commandmaster.commands.arguments.MultiCommandArgumentType
 import commandmaster.components.CmdMastComponents
 import commandmaster.enchantments.CmdMastEnchantments
 import commandmaster.files.FileSystem
@@ -17,27 +19,15 @@ import commandmaster.utils.nbt.toText
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.block.entity.CommandBlockBlockEntity
 import net.minecraft.command.argument.BlockPosArgumentType
-import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.command.argument.ItemStackArgumentType
 import net.minecraft.command.argument.NbtPathArgumentType
-import net.minecraft.command.argument.RegistryEntryArgumentType
-import net.minecraft.command.argument.RegistryKeyArgumentType
 import net.minecraft.component.Component
-import net.minecraft.component.DataComponentType
-import net.minecraft.enchantment.Enchantment
 import net.minecraft.nbt.NbtOps
 import net.minecraft.registry.Registries
-import net.minecraft.registry.RegistryKey
-import net.minecraft.registry.RegistryKeys
-import net.minecraft.screen.AnvilScreenHandler
-import net.minecraft.screen.EnchantmentScreenHandler
-import net.minecraft.server.command.DataCommand
-import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.command.ServerCommandSource as SCS
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
-import net.minecraft.util.Identifier
 import java.net.URI
 import java.nio.charset.Charset
 import kotlin.jvm.optionals.getOrNull
@@ -49,7 +39,7 @@ object CmdMastCommands {
 
             // Action that give item
             val WAND=literal<SCS>("wand").then(
-                argument<SCS,_>("macro",MacroCommandArgumentType).executes{
+                argument<SCS,_>("macro", MacroCommandArgumentType).executes{
                     val player=it.source.player
                     if(player!=null){
                         val stack=CmdMastItems.COMMAND_WAND.defaultStack
@@ -62,7 +52,7 @@ object CmdMastCommands {
             )
             val ITEM=literal<SCS>("item").then(
                 argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
-                    argument<SCS,_>("macro",MacroCommandArgumentType).executes{
+                    argument<SCS,_>("macro", MacroCommandArgumentType).executes{
                         val player=it.source.player
                         if(player!=null){
                             val stack=ItemStackArgumentType.getItemStackArgument(it,"item").createStack(1,true)
@@ -76,7 +66,7 @@ object CmdMastCommands {
             )
             val THORNS=literal<SCS>("thorns").then(
                 argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
-                    argument<SCS,_>("macro",MacroCommandArgumentType).executes{
+                    argument<SCS,_>("macro", MacroCommandArgumentType).executes{
                         val player=it.source.player
                         if(player!=null){
                             val stack=ItemStackArgumentType.getItemStackArgument(it,"item").createStack(1,true)
@@ -93,7 +83,7 @@ object CmdMastCommands {
             }
             val ATTACK=literal<SCS>("attack").then(
                 argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
-                    argument<SCS,_>("macro",MacroCommandArgumentType).executes{
+                    argument<SCS,_>("macro", MacroCommandArgumentType).executes{
                         val player=it.source.player
                         if(player!=null){
                             val stack=ItemStackArgumentType.getItemStackArgument(it,"item").createStack(1,true)
@@ -109,7 +99,7 @@ object CmdMastCommands {
                 Text.of("Give an item that call a macro a attack with attacked entity as parameters.")
             }
             val MACHINE=literal<SCS>("machine").then(
-                argument<SCS,_>("macro",MacroCommandArgumentType).executes{
+                argument<SCS,_>("macro", MacroCommandArgumentType).executes{
                     val player=it.source.player
                     if(player!=null){
                         val stack=CmdMastItems.MACHINE_BLOCK.defaultStack
@@ -121,7 +111,7 @@ object CmdMastCommands {
                 }
             )
             val SHOW=literal<SCS>("show").then(
-                argument<SCS,_>("macro",MacroCommandArgumentType).executes{
+                argument<SCS,_>("macro", MacroCommandArgumentType).executes{
                     val macro=MacroCommand(it.getArgument("macro",String::class.java))
                     it.source.sendMessage(macro.text)
                     macro.parameters.size
@@ -277,7 +267,7 @@ object CmdMastCommands {
                 argument<SCS,_>("uri",StringArgumentType.string()).then(
                     argument<SCS,_>("storage", IdentifierArgumentType.identifier()).then(
                         argument<SCS,_>("target",NbtPathArgumentType.nbtPath()).then(
-                            argument<SCS,_>("callback",MacroCommandArgumentType).executes com@{
+                            argument<SCS,_>("callback", MacroCommandArgumentType).executes com@{
                                 val path = StringArgumentType.getString(it, "uri")
                                 val storage = IdentifierArgumentType.getIdentifier(it, "storage")
                                 val target= NbtPathArgumentType.getNbtPath(it, "target")

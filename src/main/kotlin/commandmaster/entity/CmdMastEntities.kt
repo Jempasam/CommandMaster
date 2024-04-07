@@ -17,6 +17,9 @@ object CmdMastEntities {
     val MACRO_CREEPER= register("macro_creeper", ::MacroCreeperEntity, SpawnGroup.MONSTER) { dimensions(0.6f,1.7f); maxTrackingRange(7) }
         .attributes(EntityType.CREEPER)
 
+    val SMART_ZOMBIE= register("smart_zombie", ::SmartZombieEntity, SpawnGroup.MONSTER) { dimensions(0.6f,1.95f); maxTrackingRange(7) }
+        .attributes(EntityType.ZOMBIE)
+
     inline fun<T: Entity> register(id: String, factory: EntityType.EntityFactory<T>, group: SpawnGroup, builder: EntityType.Builder<T>.()->Unit): EntityType<T> {
         val build=EntityType.Builder.create(factory, group)
         build.builder()

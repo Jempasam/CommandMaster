@@ -1,3 +1,8 @@
 accessWidener v2 named
 
 extendable method net/minecraft/entity/mob/CreeperEntity explode ()V
+
+extendable method net/minecraft/entity/Entity setPos (DDD)V
+extendable method net/minecraft/entity/Entity getX ()D
+extendable method net/minecraft/entity/Entity getY ()D
+extendable method net/minecraft/entity/Entity getZ ()D

@@ -1,4 +1,4 @@
-package commandmaster.commands
+package commandmaster.commands.arguments
 
 import net.minecraft.entity.Entity
 import net.minecraft.screen.ScreenTexts

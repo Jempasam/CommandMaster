@@ -2,7 +2,7 @@ package commandmaster
 
 import commandmaster.block.CmdMastBlocks
 import commandmaster.blockentity.CmdMastBlockEntities
-import commandmaster.commands.CmdMastArgumentTypes
+import commandmaster.commands.arguments.CmdMastArgumentTypes
 import commandmaster.commands.CmdMastCommands
 import commandmaster.components.CmdMastComponents
 import commandmaster.enchantments.CmdMastEnchantments
@@ -10,9 +10,6 @@ import commandmaster.entity.CmdMastEntities
 import commandmaster.group.CmdMastItemGroup
 import commandmaster.item.CmdMastItems
 import net.fabricmc.api.ModInitializer
-import net.minecraft.entity.mob.ZombieEntity
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import org.slf4j.LoggerFactory

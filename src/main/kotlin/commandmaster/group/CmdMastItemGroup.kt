@@ -6,6 +6,7 @@ import commandmaster.components.UpgraderComponent
 import commandmaster.enchantments.CmdMastEnchantments
 import commandmaster.enchantments.CmdMastEnchantments.MACRO_ATTACK
 import commandmaster.item.CmdMastItems
+import commandmaster.item.CmdMastItems.COMMAND_WAND
 import commandmaster.macro.MacroCommand
 import commandmaster.utils.builders.ComponentsBuilder
 import commandmaster.utils.builders.nbt
@@ -33,9 +34,11 @@ import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.registry.tag.ItemTags
 import net.minecraft.registry.tag.TagKey
+import net.minecraft.scoreboard.Team
 import net.minecraft.text.RawFilteredPair
 import net.minecraft.text.Style
 import net.minecraft.text.Text
+import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.ColorHelper.Argb
@@ -45,7 +48,7 @@ object CmdMastItemGroup {
     private infix fun<T> DataComponentType<T>.to(value: T) = Component(this, value)
 
     val COMMAND_MASTER= register("command_master", FabricItemGroup.builder()
-        .icon{CmdMastItems.COMMAND_WAND.defaultStack}
+        .icon{ COMMAND_WAND.defaultStack}
         .entries { context, entries ->
 
             fun add(item: Item, builder: ComponentsBuilder.()->Unit){
@@ -55,12 +58,13 @@ object CmdMastItemGroup {
             }
 
             // Command Wand
-            add(CmdMastItems.COMMAND_WAND){ name("use_command") }
-            add(CmdMastItems.COMMAND_WAND){ name("breaker"); color(120,100,100); macro("setblock \$p air destroy") }
-            add(CmdMastItems.COMMAND_WAND){ name("stonifier"); color(100,100,100); macro("setblock \$p minecraft:stone replace") }
-            add(CmdMastItems.COMMAND_WAND){ name("creeper"); color(0,255,0); macro("summon minecraft:creeper \$p") }
-            add(CmdMastItems.COMMAND_WAND){ name("tnt"); color(255,0,0); macro("summon minecraft:tnt \$p") }
-            add(CmdMastItems.COMMAND_WAND){ name("filler"); color(255,100,0); macro("fill \$p \$p \$b") }
+            add(COMMAND_WAND){ name("use_command") }
+            add(COMMAND_WAND){ name("breaker"); color(120,100,100); macro("setblock \$p air destroy") }
+            add(COMMAND_WAND){ name("stonifier"); color(100,100,100); macro("setblock \$p minecraft:stone replace") }
+            add(COMMAND_WAND){ name("creeper"); color(0,255,0); macro("summon minecraft:creeper \$p") }
+            add(COMMAND_WAND){ name("tnt"); color(255,0,0); macro("summon minecraft:tnt \$p") }
+            add(COMMAND_WAND){ name("filler"); color(255,100,0); macro("fill \$p \$p \$b") }
+            add(COMMAND_WAND){ name("igniter"); color(100,200,70); macro("command wand execute as @e[type=commandmaster:macro_creeper,distance=..20] run data modify entity @s ignited set value 1b")}
 
             // Machine Block
             add(CmdMastItems.MACHINE_BLOCK){ name("use_command") }
@@ -74,9 +78,9 @@ object CmdMastItemGroup {
             add(GOLDEN_AXE){ name("lightning"); macro("summon lightning_bolt \$p"); ench(MACRO_ATTACK to 1) }
 
             // Tablet
-            add(CmdMastItems.COMMAND_WAND){ name("xray"); color(255,255,0); model(19); macro("effect give @e[distance=1..30] minecraft:glowing 10") }
-            add(CmdMastItems.COMMAND_WAND){ name("snow"); color(255,255,255); model(5); macro("execute positioned \$p run summon minecraft:snow_golem ~ ~1 ~") }
-            add(CmdMastItems.COMMAND_WAND){ name("iron"); color(150,150,150); model(5); macro("execute positioned \$p run summon minecraft:iron_golem ~ ~1 ~") }
+            add(COMMAND_WAND){ name("xray"); color(255,255,0); model(19); macro("effect give @e[distance=1..30] minecraft:glowing 10") }
+            add(COMMAND_WAND){ name("snow"); color(255,255,255); model(5); macro("execute positioned \$p run summon minecraft:snow_golem ~ ~1 ~") }
+            add(COMMAND_WAND){ name("iron"); color(150,150,150); model(5); macro("execute positioned \$p run summon minecraft:iron_golem ~ ~1 ~") }
 
             // Enchanted Book
             add(ENCHANTED_BOOK){
@@ -176,6 +180,22 @@ object CmdMastItemGroup {
                 CHICKEN_SPAWN_EGG, "firework", -1857861,
                 "multi (particle minecraft:firework ~ ~1 ~ 0 0 0 0.2 300 ;particle minecraft:flash)"
             )
+
+            // Team
+            fun team(name: String, color: Formatting){
+                add(COMMAND_WAND){
+                    name("team_$name")
+                    model(10)
+                    color(color.colorValue ?: DyeColor.WHITE.fireworkColor)
+                    lore("team_$name.desc")
+                    macro("multi (team add $name \"${name.replaceFirstChar{it.uppercase()}}\";team modify $name color ${color.name};team join $name \$s)")
+                }
+            }
+
+            team("red", Formatting.RED)
+            team("blue", Formatting.BLUE)
+            team("green", Formatting.GREEN)
+            team("yellow", Formatting.YELLOW)
 
             // Book
             val book= WRITTEN_BOOK.defaultStack

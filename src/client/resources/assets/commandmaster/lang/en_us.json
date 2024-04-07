@@ -46,9 +46,19 @@
   "example.commandmaster.creeper_firework" : "Firework Creeper",
   "example.commandmaster.creeper_firework.desc" : "A creeper that explode into a firework.",
 
+  "example.commandmaster.team_blue": "Blue Team",
+  "example.commandmaster.team_blue.desc": "Join the sea blue team",
+  "example.commandmaster.team_red": "Red Team",
+  "example.commandmaster.team_red.desc": "Join the red team",
+  "example.commandmaster.team_green": "Green Team",
+  "example.commandmaster.team_green.desc": "Join the great green team",
+  "example.commandmaster.team_yellow": "Yellow Team",
+  "example.commandmaster.team_yellow.desc": "Join the youpie yellow team",
+
   "block.commandmaster.machine_block": "Machine",
 
   "entity.commandmaster.macro_creeper": "Macro Creeper",
+  "entity.commandmaster.smart_zombie": "Smart Zombie",
 
   "item_group.commandmaster.command_master":  "Command Master",
 

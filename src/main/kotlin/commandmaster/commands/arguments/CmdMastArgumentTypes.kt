@@ -1,11 +1,9 @@
-package commandmaster.commands
+package commandmaster.commands.arguments
 
 import com.mojang.brigadier.arguments.ArgumentType
 import commandmaster.CommandMaster
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry
 import net.minecraft.command.argument.serialize.ArgumentSerializer
-import net.minecraft.registry.Registries
-import net.minecraft.registry.Registry
 
 object CmdMastArgumentTypes {
 

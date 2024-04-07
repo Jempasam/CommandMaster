@@ -1,4 +1,4 @@
-package commandmaster.commands
+package commandmaster.commands.arguments
 
 import com.google.gson.JsonObject
 import com.mojang.brigadier.StringReader
@@ -65,7 +65,7 @@ object MultiCommandArgumentType: ArgumentType<List<String>> {
         override fun getSerializer() = Serializer
     }
 
-    object Serializer: ArgumentSerializer<MultiCommandArgumentType,Properties>{
+    object Serializer: ArgumentSerializer<MultiCommandArgumentType, Properties>{
         override fun writePacket(properties: Properties, buf: PacketByteBuf) { }
         override fun fromPacket(buf: PacketByteBuf) = Properties
         override fun getArgumentTypeProperties(argumentType: MultiCommandArgumentType) = Properties

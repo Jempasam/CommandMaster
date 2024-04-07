@@ -1,7 +1,8 @@
-package commandmaster.entityrenderer
+package commandmaster.entityclient.renderer
 
 import commandmaster.CommandMaster
 import commandmaster.entity.MacroCreeperEntity
+import commandmaster.entityclient.model.ColoredDecoratorModel
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.CreeperEntityRenderer
 import net.minecraft.client.render.entity.EntityRendererFactory
@@ -11,20 +12,21 @@ import net.minecraft.client.render.entity.model.EntityModelLayers
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.MathHelper
+import kotlin.math.min
 
 class MacroCreeperRenderer(context: EntityRendererFactory.Context)
-    : MobEntityRenderer<MacroCreeperEntity,ColoredDecoratorModel<MacroCreeperEntity>>(
+    : MobEntityRenderer<MacroCreeperEntity, ColoredDecoratorModel<MacroCreeperEntity>>(
         context,
         ColoredDecoratorModel(CreeperEntityModel(context.getPart(EntityModelLayers.CREEPER)),1f,1f,1f),
         0.5f
     ){
     override fun getTexture(entity: MacroCreeperEntity)= CommandMaster/"textures/entity/macro_creeper.png"
 
-    override fun render(mobEntity: MacroCreeperEntity, f: Float, g: Float, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, i: Int
-    ) {
-        this.model.red=ColorHelper.Argb.getRed(mobEntity.color)/255f
-        this.model.green=ColorHelper.Argb.getGreen(mobEntity.color)/255f
-        this.model.blue=ColorHelper.Argb.getBlue(mobEntity.color)/255f
+    override fun render(mobEntity: MacroCreeperEntity, f: Float, g: Float, matrixStack: MatrixStack, vertexConsumerProvider: VertexConsumerProvider, i: Int) {
+        val g = mobEntity.getClientFuseTime(f)*100f
+        this.model.red= min(255f, ColorHelper.Argb.getRed(mobEntity.color)/255f+g)
+        this.model.green= min(255f, ColorHelper.Argb.getGreen(mobEntity.color)/255f+g)
+        this.model.blue=min(255f, ColorHelper.Argb.getBlue(mobEntity.color)/255f+g)
         super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i)
     }
 

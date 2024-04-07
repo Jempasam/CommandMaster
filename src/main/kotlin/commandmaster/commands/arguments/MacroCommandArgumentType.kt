@@ -1,10 +1,8 @@
-package commandmaster.commands
+package commandmaster.commands.arguments
 
 import com.google.gson.JsonObject
-import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.context.StringRange
 import com.mojang.brigadier.suggestion.Suggestion
@@ -12,18 +10,13 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroParamType
-import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricEntityTypeBuilder.Mob
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.command.CommandSource
 import net.minecraft.command.argument.serialize.ArgumentSerializer
 import net.minecraft.command.argument.serialize.ArgumentSerializer.ArgumentTypeProperties
 import net.minecraft.enchantment.Enchantments
-import net.minecraft.entity.mob.MobEntity
-import net.minecraft.entity.mob.ZombieEntity
-import net.minecraft.item.ArmorItem
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.server.function.FunctionLoader
 import java.util.concurrent.CompletableFuture
 
 object MacroCommandArgumentType: ArgumentType<String> {
@@ -103,7 +96,7 @@ object MacroCommandArgumentType: ArgumentType<String> {
         override fun getSerializer() = Serializer
     }
 
-    object Serializer: ArgumentSerializer<MacroCommandArgumentType,Properties>{
+    object Serializer: ArgumentSerializer<MacroCommandArgumentType, Properties>{
         override fun writePacket(properties: Properties, buf: PacketByteBuf) { }
         override fun fromPacket(buf: PacketByteBuf) = Properties
         override fun getArgumentTypeProperties(argumentType: MacroCommandArgumentType) = Properties
