@@ -61,6 +61,11 @@ You can view an item's components with `/command example`:
 ![Screenshot of the resulting printed text of the command /command example](https://github.com/Jempasam/CommandMaster/blob/master/assets/example_command.png?raw=true)
 ![Many examples of the creative tab and their tooltip, like a block breaker machine, a creeper spawner wand, and a xray tablet](https://github.com/Jempasam/CommandMaster/blob/master/assets/examples.png?raw=true)
 
+## Macro Creepers
+They call a command instead of exploding.
+You can create you own custom creeper.
+![Many creepers of differents colors](https://github.com/Jempasam/CommandMaster/blob/master/assets/creepers.png?raw=true)
+Lightning creeper, poison creeper, fire creeper, web creeper, ...
 
 
 
