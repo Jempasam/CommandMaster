@@ -2,6 +2,8 @@ package commandmaster.macro
 
 import commandmaster.macro.type.*
 import commandmaster.utils.biMapOf
+import net.minecraft.block.BlockState
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.BlockItem
@@ -21,7 +23,7 @@ interface MacroParamType{
     val color: Int
 
     fun of(entity: Entity): String?
-    fun of(world: ServerWorld, pos: BlockPos): String?
+    fun of(block: CachedBlockPosition): String?
     fun of(stack: ItemStack): String?
     fun of(text: String): String?
     fun of(nbt: NbtElement): String?
@@ -44,7 +46,9 @@ interface MacroParamType{
 
             "s" to SelectorParamType,
             "b" to BlockParamType,
-            "i" to ItemParamType
+            "i" to ItemParamType,
+            "c" to ColorParamType,
+            "t" to StringParamType
         )
     }
 }

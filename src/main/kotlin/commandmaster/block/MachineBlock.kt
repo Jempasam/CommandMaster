@@ -5,6 +5,7 @@ import commandmaster.blockentity.FullComponentBlockEntity
 import commandmaster.blockentity.getComponentBlockEntity
 import commandmaster.components.CmdMastComponents
 import commandmaster.macro.MacroCommand
+import commandmaster.macro.MacroCompletion
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.component.Component
@@ -54,7 +55,7 @@ class MachineBlock(settings: Settings) : BlockWithEntity(settings) {
         val bentity = world.getComponentBlockEntity(pos)
         val macro = bentity?.get(CmdMastComponents.MACRO_HOLDER)
         if (macro != null) {
-            val command=macro.build(listOf())
+            val command=macro.build(MacroCompletion()).getOrNull()
             if(command!=null) {
                 val source= ServerCommandSource(
                     CommandOutput.DUMMY,

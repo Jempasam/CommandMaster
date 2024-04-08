@@ -1,6 +1,7 @@
 package commandmaster.macro.type
 
 import commandmaster.macro.MacroParamType
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
@@ -22,7 +23,7 @@ class BlockposParamType(suffix:String, val stringifier:(BlockPos)->String): Macr
 
     override fun of(entity: Entity) = stringifier(entity.blockPos)
 
-    override fun of(world: ServerWorld, pos: BlockPos) = stringifier(pos)
+    override fun of(block: CachedBlockPosition) = stringifier(block.blockPos)
 
     override fun of(stack: ItemStack) = stack.getTarget() ?.let(stringifier)
 

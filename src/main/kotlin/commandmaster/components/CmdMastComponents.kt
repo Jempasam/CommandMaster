@@ -3,6 +3,7 @@ package commandmaster.components
 import com.mojang.serialization.Codec
 import commandmaster.CommandMaster
 import commandmaster.macro.MacroCommand
+import commandmaster.macro.MacroCompletion
 import net.minecraft.component.DataComponentType
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
@@ -18,7 +19,7 @@ object CmdMastComponents {
     /**
      * Store a macro command execution state.
      */
-    val MACRO_STATE= register<List<String>>("macro_state"){ codec(Codec.STRING.listOf()) }
+    val MACRO_COMPLETION= register<MacroCompletion>("macro_completion"){ MacroCompletion.CODEC }
 
     /**
      * Is shootable using the hand catapult

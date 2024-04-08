@@ -21,25 +21,21 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 
-object ColorParamType: MacroParamType {
+object StringParamType: MacroParamType {
 
-    override val name="color"
+    override val name="text"
 
-    override val example=DyeColor.RED.fireworkColor.toString()
+    override val example="Hello guy!"
 
-    override val color=0xFFAAAA
+    override val color=0x77AAFF
 
-    override fun of(entity: Entity) = entity.color.toString()
+    override fun of(entity: Entity) = entity.name.toString()
 
-    override fun of(block: CachedBlockPosition) = block.blockState.block.color.toString()
+    override fun of(block: CachedBlockPosition) = block.blockState.block.name.toString()
 
-    override fun of(stack: ItemStack) = if(stack.isEmpty) stack.item.color.toString() else null
+    override fun of(stack: ItemStack) = stack.name.toString()
 
-    override fun of(text: String) = Formatting.valueOf(text)?.takeIf { it.isColor }?.colorValue?.toString()
+    override fun of(text: String) = text
 
-    override fun of(nbt: NbtElement): String?{
-        if(nbt is NbtString) return of(nbt.asString())
-        else if(nbt is NbtInt) return nbt.intValue().toString()
-        return null
-    }
+    override fun of(nbt: NbtElement) = nbt.let{nbt as? NbtString} ?.asString()
 }

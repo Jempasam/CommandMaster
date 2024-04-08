@@ -1,30 +1,20 @@
 package commandmaster.macro
 
-import com.mojang.brigadier.context.CommandContext
 import com.mojang.serialization.Codec
 import commandmaster.codec.getWith
 import commandmaster.codec.of
 import com.mojang.serialization.Codec.*
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import commandmaster.commands.arguments.MacroCommandArgumentType
 import commandmaster.helper.overflow
-import io.netty.handler.codec.CodecException
 import net.minecraft.client.item.TooltipContext
-import net.minecraft.command.CommandSource
-import net.minecraft.entity.Entity
-import net.minecraft.entity.LivingEntity
-import net.minecraft.item.BlockItem
-import net.minecraft.item.Items
 import net.minecraft.item.TooltipAppender
-import net.minecraft.registry.Registries
-import net.minecraft.screen.AnvilScreenHandler
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
-import net.minecraft.util.math.BlockPos
 import java.util.function.Consumer
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -33,103 +23,152 @@ import kotlin.math.min
  */
 data class MacroCommand(val command: String): TooltipAppender {
 
-    val parts: List<String>
-    val parameters: List<MacroParamType>
+    class Arg(val map: Set<MacroParamType>)
+
+    val parameters: List<Arg>
+    val str_parts: List<String>
+    val param_parts: List<Pair<MacroParamType,Int>>
 
     init{
-        val fparts= mutableListOf<String>()
-        val fparameters= mutableListOf<MacroParamType>()
+        // Parameters
+        val parameters= mutableListOf<MutableSet<MacroParamType>>()
+        fun set(index: Int, type: MacroParamType){
+            while(parameters.size<=index)parameters.add(mutableSetOf())
+            parameters[index].add(type)
+        }
+
+        // Macro parts
+        val str_parts= mutableListOf<String>()
+        val param_parts= mutableListOf<Pair<MacroParamType,Int>>()
+
 
         val splitted=command.split('$').asSequence().iterator()
-        if(splitted.hasNext())fparts.add(splitted.next())
+        if(splitted.hasNext())str_parts.add(splitted.next())
+        var nextArgNum=0
         for(part in splitted){
-            if(part.length>0){
-                val type=MacroParamType.TYPES[part[0]]
-                if(type!=null) {
-                    fparameters.add(type)
-                    fparts.add(part.substring(1))
-                }
-                else{
-                    fparts.set(fparts.size-1,"${fparts.last()}$${part}")
-                }
+            var i=0
+            var argnum=nextArgNum
+            var type: MacroParamType?=null
+
+            // Get num
+            if(part[i] in '0'..<'9') {
+                argnum=part[i]-'0'
+                i++
             }
+
+            // Get type
+            if(part.length>1){
+                type = MacroParamType.TYPES[part.substring(i, i+2)]
+                if(type!=null)i+=2
+            }
+            if(type==null && part.length>0){
+                type = MacroParamType.TYPES[part.substring(i, i+1)]
+                if(type!=null)i+=1
+            }
+
+            // If it is a valid parameter, add it
+            if(type!=null){
+                // Add to the parameter list
+                set(argnum, type)
+
+                // Add to the parts
+                param_parts+= type to argnum
+                str_parts+= part.substring(i)
+
+                nextArgNum=argnum
+            }
+            else{
+                str_parts.set(str_parts.size-1, "${str_parts.last()}$${part}")
+            }
+
+            nextArgNum= max(nextArgNum, argnum+1)
         }
-        parts=fparts
-        parameters=fparameters
+
+        this.parameters=parameters.map{Arg(it)}
+        this.str_parts=str_parts
+        this.param_parts=param_parts
     }
 
-    inline fun visit(on_part: (String)->Unit, on_param: (MacroParamType)->Unit){
-        on_part(parts[0])
+    inline fun visit(on_part: (String)->Unit, on_param: (MacroParamType, Int)->Unit){
+        on_part(str_parts[0])
         for(i in 0 until parameters.size){
-            on_param(parameters[i])
-            on_part(parts[i+1])
+            on_param(param_parts[i].first, param_parts[i].second)
+            on_part(str_parts[i+1])
         }
     }
 
-    inline fun visit(values: List<String>, on_part: (String)->Unit, on_value: (String,MacroParamType)->Unit, on_param: (MacroParamType)->Unit){
-        on_part(parts[0])
-        var i=0
-        val min= min(parameters.size,values.size)
-        while(i<min){
-            on_value(values[i],parameters[i])
-            on_part(parts[i+1])
-            i++
-        }
-        while(i<parameters.size){
-            on_param(parameters[i])
-            on_part(parts[i+1])
-            i++
-        }
+    val INVALID="[INVALID]"
+    inline fun visit(completion: MacroCompletion, on_part: (String)->Unit, on_value: (String,MacroParamType,Int)->Unit, on_param: (MacroParamType,Int)->Unit){
+        visit(
+            {part-> on_part(part) },
+            {param, num->
+                if(num<=completion.size){
+                    try{
+                        val value=completion.get(num, param)
+                        on_value(value, param, num)
+                    }catch (e: MacroCompletion.IncompatibleCompletion){
+                        on_value(INVALID, param, num)
+                    }
+                }
+                else on_param(param, num)
+            }
+        )
     }
 
-    inline fun<T> map(mapper: (MacroParamType,Int)->T): MutableList<T>{
+    inline fun<T> map(mapper: (MacroParamType, Int, Int)->T): MutableList<T>{
         val ret= mutableListOf<T>()
-        for(i in parameters.indices){
-            val type=parameters[i]
-            ret.add(mapper(type,i))
+        for(i in param_parts.indices){
+            val type=param_parts[i]
+            ret.add(mapper(type.first, type.second, i))
         }
         return ret
     }
 
-    fun build(params: List<String>): String?{
+    fun build(params: MacroCompletion): Result<String>{
         var result=""
         visit( params,
             {part-> result+=part},
-            {value,type-> result+=value},
-            {param-> return null}
+            {value,_, _->
+                if(value===INVALID) result+=value
+                else return Result.failure(MacroCompletion.IncompatibleCompletion)
+            },
+            {_, _-> return Result.failure(MacroCompletion.IncompleteCompletion)}
         )
-        return result
+        return Result.success(result)
     }
 
-    fun sub(params:List<String>): MacroCommand{
+    fun sub(params: MacroCompletion): Result<MacroCommand>{
         var result=""
         visit( params,
             {part-> result+=part},
-            {value,type-> result+=value},
-            {param->
+            {value,_, _->
+                if(value===INVALID)result+=value
+                else return Result.failure(MacroCompletion.IncompatibleCompletion)
+            },
+            {param, _->
                 val letter=MacroParamType.TYPES.getKey(param)
                 result+="$$letter"
             }
         )
-        return MacroCommand(result)
+        return Result.success(MacroCommand(result))
     }
 
-    fun textWith(params: List<String>): Text{
+    fun textWith(params: MacroCompletion): Text{
         val result= Text.empty()
         visit(params,
             {part-> result.append(Text.literal(part))},
-            {value,type-> result.append(Text.literal(value).withColor(type.color))},
-            {param-> result.append(Text.literal("$${param.name}").withColor(param.color))}
+            {value,type, _-> result.append(Text.literal(value).withColor(type.color))},
+            {param, _-> result.append(Text.literal("$${param.name}").withColor(param.color))}
         )
         return result
     }
 
-    fun shortTextWith(params: List<String>): MutableText{
+    fun shortTextWith(params: MacroCompletion): MutableText{
         val result= Text.empty()
         visit(params,
             {part-> result.append(Text.literal(part))},
-            {value,type-> result.append(Text.literal(value).withColor(type.color))},
-            {param-> result.append(Text.literal("$").withColor(param.color))}
+            {value,type,_-> result.append(Text.literal(value).withColor(type.color))},
+            {param,_-> result.append(Text.literal("$").withColor(param.color))}
         )
         return result
     }
@@ -138,7 +177,7 @@ data class MacroCommand(val command: String): TooltipAppender {
         val result= Text.empty()
         visit(
             {part-> result.append(Text.literal(part))},
-            {param-> result.append(Text.literal("$${MacroParamType.TYPES.getKey(param)}").withColor(param.color))}
+            {param,_-> result.append(Text.literal("$${MacroParamType.TYPES.getKey(param)}").withColor(param.color))}
         )
         return result
     }
@@ -147,9 +186,18 @@ data class MacroCommand(val command: String): TooltipAppender {
         val result= Text.empty()
         visit(
             {part-> result.append(Text.literal(part))},
-            {param-> result.append(Text.literal("$${param.name}").withColor(param.color))}
+            {param,_-> result.append(Text.literal("$${param.name}").withColor(param.color))}
         )
         return result
+    }
+
+    val example: String get(){
+        val result= StringBuilder()
+        visit(
+            {part-> result.append(part)},
+            {param,_-> result.append(param.example)}
+        )
+        return result.toString()
     }
 
     override fun appendTooltip(textConsumer: Consumer<Text>, context: TooltipContext) {
@@ -163,11 +211,6 @@ data class MacroCommand(val command: String): TooltipAppender {
     override fun toString() = "Macro{$command}"
 
     companion object{
-        val OLD_CODEC: Codec<MacroCommand> = RecordCodecBuilder.create {
-            it.group(
-                "command" of STRING getWith MacroCommand::command
-            ).apply(it, ::MacroCommand)
-        }
         val CODEC = STRING.xmap({MacroCommand(it)},{it.command})
 
         fun executeMultiline(server: MinecraftServer, context: ServerCommandSource, command: String){
@@ -178,8 +221,13 @@ data class MacroCommand(val command: String): TooltipAppender {
 
 fun main() {
     val command=MacroCommand("setblock \$p \$p minecraft:dirt")
-    println(command.build(listOf("1 2 3")))
+    command.visit(
+        {part-> print(part)},
+        {param, num-> print("{${param.name},$num}")}
+    )
+    println()
+    /*println(command.build(listOf("1 2 3")))
     println(command.build(listOf("1 2 3","4 5 6")))
-    println(command.sub(listOf("1 2 3")))
+    println(command.sub(listOf("1 2 3")))*/
     println(command)
 }

@@ -1,6 +1,7 @@
 package commandmaster.macro.type
 
 import commandmaster.macro.MacroParamType
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.decoration.ItemFrameEntity
@@ -26,7 +27,7 @@ object ItemParamType: MacroParamType {
 
     override fun of(entity: Entity) = entity.asItemStack() ?.let {of(it)}
 
-    override fun of(world: ServerWorld, pos: BlockPos) = null
+    override fun of(block: CachedBlockPosition) = null
 
     override fun of(stack: ItemStack): String?{
         if(stack.isEmpty)return null

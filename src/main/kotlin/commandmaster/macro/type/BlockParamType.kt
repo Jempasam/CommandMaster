@@ -1,6 +1,7 @@
 package commandmaster.macro.type
 
 import commandmaster.macro.MacroParamType
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.decoration.ItemFrameEntity
@@ -25,7 +26,7 @@ object BlockParamType: MacroParamType {
     override val color=0xAA6600
 
     override fun of(entity: Entity) = entity.asItemStack() ?.let {of(it)}
-    override fun of(world: ServerWorld, pos: BlockPos) = Registries.BLOCK.getId(world.getBlockState(pos).block).toString()
+    override fun of(block: CachedBlockPosition) = Registries.BLOCK.getId(block.blockState.block).toString()
 
     override fun of(stack: ItemStack): String?{
         if(stack.isEmpty)return null

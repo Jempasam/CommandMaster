@@ -1,6 +1,7 @@
 package commandmaster.macro.type
 
 import commandmaster.macro.MacroParamType
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.AbstractNbtNumber
@@ -21,7 +22,7 @@ class DirectionParamType(val suffix:String, val stringifier: (Float,Float)->Stri
 
     override fun of(entity: Entity) = stringifier(entity.yaw,entity.pitch)
 
-    override fun of(world: ServerWorld, pos: BlockPos) = null
+    override fun of(block: CachedBlockPosition) = null
 
     override fun of(stack: ItemStack) = null
 

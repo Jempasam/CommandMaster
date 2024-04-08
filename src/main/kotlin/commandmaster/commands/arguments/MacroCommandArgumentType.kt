@@ -24,15 +24,22 @@ object MacroCommandArgumentType: ArgumentType<String> {
         val ret=reader.remaining
         reader.cursor=reader.totalLength
 
-        var afterarg=false
+        var pos=0
+        var word=""
         ret.forEach {
-            if(afterarg){
-                MacroParamType.TYPES[it] ?: throw IllegalArgumentException("Invalid macro argument type: \"$it\"")
-                afterarg=false
+            if(pos==3){
+                MacroParamType.TYPES[word.take(1)] ?: MacroParamType.TYPES[word]?: throw IllegalArgumentException("Invalid macro argument type: \"$it\"")
+                word=""
+                pos=0
             }
-            else if(it=='$')afterarg=true
+            else if(pos>0){
+                pos++
+                word+=it
+            }
+            else if(it=='$') pos=1
         }
-        if(afterarg)throw IllegalArgumentException("Expected macro argument type after macro argument symbol \"$\"")
+        if(pos==1)throw IllegalArgumentException("Expected macro argument type after macro argument symbol \"$\"")
+        else if(pos==2)MacroParamType.TYPES[word] ?: throw IllegalArgumentException("Invalid macro argument type: \"$word\"")
 
         return ret
     }
@@ -63,11 +70,7 @@ object MacroCommandArgumentType: ArgumentType<String> {
                 if(source is ServerCommandSource){
                     // Complete args
                     val macro=MacroCommand(command)
-                    var result=""
-                    macro.visit(
-                        {part -> result+=part},
-                        {param -> result+=param.example}
-                    )
+                    val result=macro.example
 
                     // Suggest
                     source.server.commandManager.dispatcher.let { dispatcher ->

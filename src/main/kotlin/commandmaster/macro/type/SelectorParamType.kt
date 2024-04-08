@@ -1,6 +1,7 @@
 package commandmaster.macro.type
 
 import commandmaster.macro.MacroParamType
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtElement
@@ -19,7 +20,7 @@ object SelectorParamType: MacroParamType {
 
     override fun of(entity: Entity) = entity.uuidAsString
 
-    override fun of(world: ServerWorld, pos: BlockPos) = null
+    override fun of(block: CachedBlockPosition) = null
 
     override fun of(stack: ItemStack) = null
 

@@ -1,6 +1,7 @@
 package commandmaster.macro.type
 
 import commandmaster.macro.MacroParamType
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.Entity
 import net.minecraft.item.ItemStack
@@ -22,7 +23,7 @@ class PositionParamType(suffix:String, val stringifier:(Vec3d)->String): MacroPa
 
     override fun of(entity: Entity) = stringifier(entity.pos)
 
-    override fun of(world: ServerWorld, pos: BlockPos) = stringifier(Vec3d.ofCenter(pos))
+    override fun of(block: CachedBlockPosition) = stringifier(Vec3d.ofCenter(block.blockPos))
 
     override fun of(stack: ItemStack) = stack.getTarget() ?.let{stringifier(Vec3d.ofCenter(it))}
 

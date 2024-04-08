@@ -14,6 +14,7 @@ import commandmaster.enchantments.CmdMastEnchantments
 import commandmaster.files.FileSystem
 import commandmaster.item.CmdMastItems
 import commandmaster.macro.MacroCommand
+import commandmaster.macro.MacroCompletion
 import commandmaster.macro.MacroParamType
 import commandmaster.network.NbtFetcher
 import commandmaster.utils.nbt.toText
@@ -159,7 +160,7 @@ object CmdMastCommands {
                             The parameters can be one of the following:
                             """.trimIndent())
                     for((key,param) in MacroParamType.TYPES){
-                        val value=it.source.player?.let { ", Example: "+param.selectAir(it) } ?: ""
+                        val value=it.source.player?.let { ", Example: "+param.of(it) } ?: ""
                         message.append("\n - ").append(Text.literal("$$key, ${param.name}$value)").withColor(param.color))
                     }
                     message
@@ -239,7 +240,7 @@ object CmdMastCommands {
                             it.source.server.commandManager.executeWithPrefix(it.source,command)
                         }
                         else if(blockentity is FullComponentBlockEntity){
-                            command= blockentity.get(CmdMastComponents.MACRO_HOLDER) ?.build(listOf()) ?: break
+                            command= blockentity.get(CmdMastComponents.MACRO_HOLDER) ?.build(MacroCompletion()) ?.getOrNull() ?: break
                             MacroCommand.executeMultiline(it.source.server,it.source,command)
                         }
                         else break
@@ -281,7 +282,7 @@ object CmdMastCommands {
                                 val macro= it.getArgument("callback",String::class.java)
 
                                 // Parse macro
-                                val command=MacroCommand(macro).build(listOf()) ?: run{it.source.sendError(Text.of("Invalid macro!")); return@com 0}
+                                val command=MacroCommand(macro).build(MacroCompletion())?.getOrNull() ?: run{it.source.sendError(Text.of("Invalid macro!")); return@com 0}
 
                                 // Send
                                 val uri= runCatching { URI.create(path) }.getOrNull() ?: run{it.source.sendError(Text.of("Invalid URI!")); return@com 0}
