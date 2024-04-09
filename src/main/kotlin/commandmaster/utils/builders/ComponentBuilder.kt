@@ -11,18 +11,21 @@ import net.minecraft.component.DataComponentType
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.component.type.*
 import net.minecraft.enchantment.Enchantment
+import net.minecraft.entity.EntityType
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.registry.tag.TagKey
+import net.minecraft.text.RawFilteredPair
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.ColorHelper
 import java.util.Optional
 
-class ComponentsBuilder(val stack: Target){
+@JvmInline
+value class ComponentsBuilder(val stack: Target){
 
     interface Target{
         fun<T> set(type: DataComponentType<T>, value: T)
@@ -63,9 +66,21 @@ class ComponentsBuilder(val stack: Target){
 
     fun entity(vararg pairs: Pair<String, NbtElement>) = entity(nbt(*pairs))
 
+    inline fun book(title: String, author: String="Nobody", generation: Int=1, page_builder: BookBuilder.()->Unit){
+        val pages= mutableListOf<RawFilteredPair<Text>>()
+        BookBuilder(pages).page_builder()
+        stack.set(DataComponentTypes.WRITTEN_BOOK_CONTENT, WrittenBookContentComponent(RawFilteredPair.of(title),author,generation,pages,false))
+    }
+
     companion object{
         fun stack(target: ItemStack) = ComponentsBuilder(ItemStackTarget(target))
 
         fun changes(target: ComponentChanges.Builder) = ComponentsBuilder(ChangesTarget(target))
     }
+}
+
+inline fun stack(item: Item, count: Int=1, builder: ComponentsBuilder.()->Unit): ItemStack{
+    val stack=ItemStack(item,count)
+    ComponentsBuilder.stack(stack).builder()
+    return stack
 }

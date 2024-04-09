@@ -36,7 +36,7 @@ object MacroCommands: CommandRegistrationCallback {
             val player=context.source.player
             if(player!=null){
                 val stack=stack_provider()
-                stack.set(CmdMastComponents.MACRO_HOLDER, MacroCommand(context.getArgument("macro",String::class.java)))
+                stack.set(CmdMastComponents.MACRO_HOLDER, context.getArgument("macro",MacroCommand::class.java))
                 player.giveItemStack(stack)
                 return 1
             }
@@ -121,7 +121,7 @@ object MacroCommands: CommandRegistrationCallback {
          */
         val SHOW= literal<SCS>("show").then(
             argument<SCS, _>("macro", MacroCommandArgumentType).executes{
-                val macro= MacroCommand(it.getArgument("macro",String::class.java))
+                val macro= it.getArgument("macro",MacroCommand::class.java)
                 it.source.sendMessage(macro.text)
                 macro.parameters.size
             }

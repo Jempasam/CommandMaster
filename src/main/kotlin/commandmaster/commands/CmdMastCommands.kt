@@ -20,6 +20,7 @@ import commandmaster.network.NbtFetcher
 import commandmaster.utils.commands.help
 import commandmaster.utils.nbt.toText
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.minecraft.block.Block
 import net.minecraft.block.entity.CommandBlockBlockEntity
 import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.command.argument.BlockPosArgumentType
@@ -35,9 +36,12 @@ import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.command.ServerCommandSource as SCS
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
+import net.minecraft.util.math.Vec3d
 import java.net.URI
 import java.nio.charset.Charset
 import kotlin.jvm.optionals.getOrNull
+import kotlin.math.abs
+import kotlin.math.min
 
 
 object CmdMastCommands {
@@ -110,7 +114,7 @@ object CmdMastCommands {
                 return 1
             }
 
-            val COMMAND= literal<SCS>("command").requires {it.hasPermissionLevel(2)}
+            val COMMAND= literal<SCS>("cmdmast").requires {it.hasPermissionLevel(2)}
                 .then(EXAMPLE)
                 .help {
                     val message=Text.literal("""
@@ -230,6 +234,56 @@ object CmdMastCommands {
                 }
             )
 
+            val FOR_AT= literal<SCS>("for_at").then(
+                argument<SCS,_>("from",BlockPosArgumentType.blockPos()).then(
+                    argument<SCS,_>("to",BlockPosArgumentType.blockPos()).fork(disp.root){ context ->
+                        val from=BlockPosArgumentType.getBlockPos(context,"from")
+                        val to=BlockPosArgumentType.getBlockPos(context,"to")
+                        val mx= min(from.x,to.x)
+                        val my= min(from.y,to.y)
+                        val mz= min(from.z,to.z)
+                        val dx= abs(to.x-from.x)+1
+                        val dy= abs(to.y-from.y)+1
+                        val dz= abs(to.z-from.z)+1
+                        val count=dx*dy*dz
+                        List(count){
+                            val x=it%dx+mx
+                            val y=(it/dx)%dy+my
+                            val z=it/(dx*dy)+mz
+                            context.source.withPosition(Vec3d(x+0.5,y+0.5,z+0.5))
+                        }
+                    }
+                )
+            )
+
+            val FIX= literal<SCS>("fix").then(
+                argument<SCS,_>("pos",BlockPosArgumentType.blockPos()).then(
+                    argument<SCS,_>("regex",StringArgumentType.string()).then(
+                        argument<SCS,_>("replacement",StringArgumentType.string()).executes{
+                            val pos=BlockPosArgumentType.getBlockPos(it,"pos")
+                            val regexstr=StringArgumentType.getString(it,"regex")
+                            val replacement=StringArgumentType.getString(it,"replacement")
+
+                            val regex=Regex(regexstr)
+
+                            val blockentity=it.source.world.getBlockEntity(pos)
+                            if(blockentity is CommandBlockBlockEntity){
+                                val command=blockentity.commandExecutor.command
+                                val result=regex.replace(command,replacement)
+                                blockentity.commandExecutor.command=result
+                                1
+                            }
+                            else 0
+                        }
+                    )
+                )
+            ).help {
+                Text.literal("""
+                    Apply a regex replacement filter to a command block.
+                    Useful for datafixing command blocks after a syntax breaking change.
+                """.trimIndent())
+            }
+
             val FETCHNBT=literal<SCS>("fetchnbt").then(
                 argument<SCS,_>("uri",StringArgumentType.string()).then(
                     argument<SCS,_>("storage", IdentifierArgumentType.identifier()).then(
@@ -238,10 +292,10 @@ object CmdMastCommands {
                                 val path = StringArgumentType.getString(it, "uri")
                                 val storage = IdentifierArgumentType.getIdentifier(it, "storage")
                                 val target= NbtPathArgumentType.getNbtPath(it, "target")
-                                val macro= it.getArgument("callback",String::class.java)
+                                val macro= it.getArgument("callback",MacroCommand::class.java)
 
                                 // Parse macro
-                                val command=MacroCommand(macro).build(MacroCompletion())?.getOrNull() ?: run{it.source.sendError(Text.of("Invalid macro!")); return@com 0}
+                                val command=macro.build(MacroCompletion())?.getOrNull() ?: run{it.source.sendError(Text.of("Invalid macro!")); return@com 0}
 
                                 // Send
                                 val uri= runCatching { URI.create(path) }.getOrNull() ?: run{it.source.sendError(Text.of("Invalid URI!")); return@com 0}
@@ -250,8 +304,8 @@ object CmdMastCommands {
                                     else{
                                         val storagedata=it.source.server.dataCommandStorage.get(storage)
                                         target.put(storagedata,result.getOrThrow())
-                                        it.source.server.commandManager.executeWithPrefix(it.source,command)
                                         it.source.server.dataCommandStorage.set(storage,storagedata)
+                                        it.source.server.commandManager.executeWithPrefix(it.source,command)
                                     }
                                 }
                                 1
@@ -271,6 +325,8 @@ object CmdMastCommands {
 
             disp.register(COMMAND)
             disp.register(FETCHNBT)
+            disp.register(FIX)
+            disp.register(FOR_AT)
             disp.register(REPEAT)
             //disp.register(FILE)
             disp.register(RUNSTACK)

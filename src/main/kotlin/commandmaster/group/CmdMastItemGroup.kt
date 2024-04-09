@@ -35,13 +35,14 @@ import net.minecraft.registry.Registry
 import net.minecraft.registry.tag.ItemTags
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.scoreboard.Team
-import net.minecraft.text.RawFilteredPair
-import net.minecraft.text.Style
-import net.minecraft.text.Text
+import net.minecraft.server.command.TellRawCommand
+import net.minecraft.text.*
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
+import net.minecraft.util.Formatting.*
 import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.ColorHelper.Argb
+import java.text.Normalizer.Form
 
 object CmdMastItemGroup {
 
@@ -205,10 +206,10 @@ object CmdMastItemGroup {
                 }
             }
 
-            team("red", Formatting.RED)
-            team("blue", Formatting.BLUE)
-            team("green", Formatting.GREEN)
-            team("yellow", Formatting.YELLOW)
+            team("red", RED)
+            team("blue", BLUE)
+            team("green", GREEN)
+            team("yellow", YELLOW)
 
             add(COMMAND_WAND){
                 name("team_none")
@@ -220,25 +221,36 @@ object CmdMastItemGroup {
 
             // Book
             val book= WRITTEN_BOOK.defaultStack
-            book.set(DataComponentTypes.WRITTEN_BOOK_CONTENT, WrittenBookContentComponent(
-                RawFilteredPair.of("Small Guide of Command Master"),
-                "Jempasam",
-                1,
-                listOf(
-                    RawFilteredPair.of(Text.of("""
-                        Commands:
-                        - /command
-                        - /get_color
-                        - /multi
-                        - /repeat
-                        - /macro
-                        - /fetch_nbt
-                        Use "/command example" while holding any example item to learn how it works.
-                    """.trimIndent()))
-                ),
-                false
-            ))
-            entries.add(book)
+            add(WRITTEN_BOOK){
+                book("Small Guide of Command Master", "Jempasam"){
+                    fun page(title: String, content: String, vararg examples: String){
+                        val result=Text.empty()
+                        result.append(Text.literal("$title\n").formatted(BOLD))
+                        result.append(Text.literal("$content\n").formatted(DARK_GRAY))
+                        for(example in examples){
+                            result.append(Text.literal("$example\n").formatted(ITALIC, GRAY).styled {
+                                it.withClickEvent(ClickEvent(ClickEvent.Action.RUN_COMMAND,example))
+                            })
+                        }
+                        +result
+                    }
+                    page(
+                        "--Guide Book--",
+                        """
+                            Learn the many commands.
+                            Use "/cmdmast example" while holding any example item to learn how it works.
+                        """.trimIndent()
+                    )
+                    page("/cmdmast", "Show the components of an items with a colored output, and get help about the mod", "/cmdmast example")
+                    page("/get_color", "Get the color under the mouse pointer. Client-side only.", "/get_color")
+                    page("/multi", "Execute multiple commands at once", "/multi (say Hello;say World)", "/multi (effect give @s speed;effect give @s jump_boost)")
+                    page("/repeat", "Repeat a command multiple times", "/repeat 5 say Hello","/repeat 5 summon pig")
+                    page("/macro", "Debug macros, create items holding a macro, view the macro manual.", "/macro wand setblock \$p air destroy")
+                    page("/fetch_nbt", "Fetch a nbt value from a external source through HTTP, NBT format is sort of a subset of JSON", """/fetchnbt "https://api.ipify.org?format=json" commandmaster:example ip tellraw @s {"storage":"commandmaster:example","nbt":"ip"}""")
+                    page("/fix", "Fix a command block using a regex and replacement string.","""/fix ~ ~-1 ~ "say " "tellraw @s """")
+                    page("/for_at", "Call a command for each block in a rectangular zone.", """/for_at ~-2 ~-2 ~-2 ~2 ~2 ~2 particle minecraft:block_marker fire""", """/for_at ~-1 ~-1 ~-1 ~1 ~1 ~1 summon minecraft:shulker""")
+                }
+            }
         })
 
         fun register(id: String, itemGroup: ItemGroup.Builder): ItemGroup{

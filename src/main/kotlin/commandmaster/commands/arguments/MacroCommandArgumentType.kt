@@ -19,8 +19,8 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.command.ServerCommandSource
 import java.util.concurrent.CompletableFuture
 
-object MacroCommandArgumentType: ArgumentType<String> {
-    override fun parse(reader: StringReader): String{
+object MacroCommandArgumentType: ArgumentType<MacroCommand> {
+    override fun parse(reader: StringReader): MacroCommand{
         val ret=reader.remaining
         reader.cursor=reader.totalLength
 
@@ -50,7 +50,8 @@ object MacroCommandArgumentType: ArgumentType<String> {
             if(word.isNotEmpty())check()
             else throw IllegalArgumentException("Expected macro argument type after macro argument symbol \"$\"")
         }
-        return ret
+        val macro=MacroCommand(ret)
+        return macro
     }
 
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
