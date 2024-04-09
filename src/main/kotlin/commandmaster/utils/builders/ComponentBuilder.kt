@@ -52,14 +52,12 @@ class ComponentsBuilder(val stack: Target){
     fun edible(hunger: Int=2) = add(DataComponentTypes.FOOD, FoodComponent.Builder().hunger(hunger).saturationModifier(0.6f).build())
     fun model(data: Int) = stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelDataComponent(data))
 
-    fun giving(target: TagKey<Item>?, builder: ComponentsBuilder.()->Unit) {
+    fun giving(target: TagKey<Item>?=null, merge: Boolean=false, show: Boolean=true, levelCost: Int=1, builder: ComponentsBuilder.()->Unit) {
         val subbuilder=ComponentChanges.builder()
         Items.COOKED_COD
         ComponentsBuilder(ChangesTarget(subbuilder)).builder()
-        stack.set(CmdMastComponents.UPGRADER_COMPONENT, UpgraderComponent(Optional.ofNullable(target), subbuilder.build()))
+        stack.set(CmdMastComponents.UPGRADER_COMPONENT, UpgraderComponent(Optional.ofNullable(target), subbuilder.build(),levelCost,show,merge))
     }
-
-    fun giving(builder: ComponentsBuilder.()->Unit) = giving(null, builder)
 
     fun entity(entity: NbtCompound) = stack.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entity))
 

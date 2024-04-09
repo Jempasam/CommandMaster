@@ -135,7 +135,7 @@ object CmdMastItemGroup {
             add(FLINT){
                 name("flint")
                 lore("flint.desc")
-                giving{
+                giving(merge=true){
                     ench(Enchantments.SHARPNESS to 2)
                 }
             }
