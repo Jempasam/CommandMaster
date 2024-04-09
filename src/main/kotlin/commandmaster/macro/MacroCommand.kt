@@ -7,8 +7,11 @@ import com.mojang.serialization.Codec.*
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import commandmaster.commands.arguments.MacroCommandArgumentType
 import commandmaster.helper.overflow
+import commandmaster.utils.builders.nbt
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.TooltipAppender
+import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.NbtList
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.MutableText
@@ -102,7 +105,7 @@ data class MacroCommand(val command: String): TooltipAppender {
         visit(
             {part-> on_part(part) },
             {param, num->
-                if(num<=completion.size){
+                if(num<completion.size){
                     try{
                         val value=completion.get(num, param)
                         on_value(value, param, num)
@@ -129,8 +132,8 @@ data class MacroCommand(val command: String): TooltipAppender {
         visit( params,
             {part-> result+=part},
             {value,_, _->
-                if(value===INVALID) result+=value
-                else return Result.failure(MacroCompletion.IncompatibleCompletion)
+                if(value===INVALID) return Result.failure(MacroCompletion.IncompatibleCompletion)
+                else result+=value
             },
             {_, _-> return Result.failure(MacroCompletion.IncompleteCompletion)}
         )
@@ -142,8 +145,8 @@ data class MacroCommand(val command: String): TooltipAppender {
         visit( params,
             {part-> result+=part},
             {value,_, _->
-                if(value===INVALID)result+=value
-                else return Result.failure(MacroCompletion.IncompatibleCompletion)
+                if(value===INVALID) return Result.failure(MacroCompletion.IncompatibleCompletion)
+                else result+=value
             },
             {param, _->
                 val letter=MacroParamType.TYPES.getKey(param)
@@ -226,7 +229,15 @@ fun main() {
         {param, num-> print("{${param.name},$num}")}
     )
     println()
-    /*println(command.build(listOf("1 2 3")))
+    run{
+        val completion= macroCompletion {
+            add(nbt(10,5,5),command)
+            add(nbt("z" to 20.nbt, "y" to 10.nbt, "x" to 5.nbt),command)
+        }
+        println(completion)
+        println(command.sub(completion).map { it.command })
+    }
+    /*println(command.build())
     println(command.build(listOf("1 2 3","4 5 6")))
     println(command.sub(listOf("1 2 3")))*/
     println(command)

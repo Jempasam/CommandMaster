@@ -31,8 +31,8 @@ class PositionParamType(suffix:String, val stringifier:(Vec3d)->String): MacroPa
 
     override fun of(nbt: NbtElement): String? {
         if (nbt is NbtList && nbt.size == 3){
-            if(nbt.type== FLOAT_TYPE)return stringifier(Vec3d(nbt.getFloat(0).toDouble(), nbt.getFloat(1).toDouble(), nbt.getFloat(2).toDouble()))
-            else if(nbt.type== DOUBLE_TYPE)return stringifier(Vec3d(nbt.getDouble(0), nbt.getDouble(1), nbt.getDouble(2)))
+            if(nbt.heldType==FLOAT_TYPE)return stringifier(Vec3d(nbt.getFloat(0).toDouble(), nbt.getFloat(1).toDouble(), nbt.getFloat(2).toDouble()))
+            else if(nbt.heldType==DOUBLE_TYPE)return stringifier(Vec3d(nbt.getDouble(0), nbt.getDouble(1), nbt.getDouble(2)))
         }
         else if(nbt is NbtCompound && nbt.size==3){
             val x=(nbt.get("x") as? AbstractNbtNumber)?.doubleValue() ?: return null

@@ -30,15 +30,15 @@ interface MacroParamType{
 
     companion object{
         val TYPES= biMapOf<_,MacroParamType>(
-            "p" to PositionParamType.ALL,
-            "xp" to PositionParamType.X,
-            "yp" to PositionParamType.Y,
-            "zp" to PositionParamType.Z,
+            "v" to PositionParamType.ALL,
+            "xv" to PositionParamType.X,
+            "yv" to PositionParamType.Y,
+            "zv" to PositionParamType.Z,
 
-            "q" to BlockposParamType.ALL,
-            "xq" to BlockposParamType.X,
-            "yq" to BlockposParamType.Y,
-            "zq" to BlockposParamType.Z,
+            "p" to BlockposParamType.ALL,
+            "xp" to BlockposParamType.X,
+            "yp" to BlockposParamType.Y,
+            "zp" to BlockposParamType.Z,
 
             "d" to DirectionParamType.ALL,
             "xd" to DirectionParamType.YAW,

@@ -55,8 +55,8 @@ class MachineBlock(settings: Settings) : BlockWithEntity(settings) {
         val bentity = world.getComponentBlockEntity(pos)
         val macro = bentity?.get(CmdMastComponents.MACRO_HOLDER)
         if (macro != null) {
-            val command=macro.build(MacroCompletion()).getOrNull()
-            if(command!=null) {
+            val command=macro.build(MacroCompletion())
+            command.onSuccess { command ->
                 val source= ServerCommandSource(
                     CommandOutput.DUMMY,
                     Vec3d.ofCenter(pos), state.get(FACING).asAngle(),

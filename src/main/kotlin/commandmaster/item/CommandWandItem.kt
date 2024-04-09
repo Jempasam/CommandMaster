@@ -30,8 +30,7 @@ class CommandWandItem(settings: Settings) : Item(settings) {
         val state=stack.get(MACRO_COMPLETION) ?: MacroCompletion()
         if(macro==null)return
 
-        val command=macro.build(state).getOrNull()
-        if(command==null)return
+        val command=macro.build(state).getOrElse{ return }
         stack.damage(1,player,if(hand==Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
         stack.remove(MACRO_COMPLETION)
         server?.let { MacroCommand.executeMultiline(it,player.commandSource.withMaxLevel(3).withSilent(),command) }

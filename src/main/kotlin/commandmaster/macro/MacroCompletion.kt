@@ -14,6 +14,8 @@ class MacroCompletion private constructor(val parameters: List<Arg> = listOf()){
     @JvmInline
     value class Arg(val map: Map<MacroParamType, String>){
         fun get(type: MacroParamType) = map[type] ?: throw IncompatibleCompletion
+
+        override fun toString() = map.entries.map { (key, value)->"${key.name}=$value" }.joinToString(", ").let { "{$it}" }
     }
 
     class InvalidTarget(val type: MacroParamType): Exception(){
@@ -45,6 +47,8 @@ class MacroCompletion private constructor(val parameters: List<Arg> = listOf()){
         builder.action()
         return builder.build()
     }
+
+    override fun toString() = parameters.toString()
 
     companion object {
         val CODEC= Codec.unboundedMap(Codec.STRING, Codec.STRING) .listOf() .xmap(
@@ -99,7 +103,18 @@ class MacroCompletion private constructor(val parameters: List<Arg> = listOf()){
         fun add(value: String, arg: MacroCommand.Arg) = add(value, MacroParamType::of, arg)
         fun add(value: NbtElement, arg: MacroCommand.Arg) = add(value, MacroParamType::of, arg)
 
+        fun<T> add(target: T, prop: MacroParamType.(T)->String?, arg: MacroCommand): Builder{
+            return add(target,prop,arg.parameters[parameters.size])
+        }
+
+        fun add(target: ItemStack, arg: MacroCommand) = add(target, MacroParamType::of, arg)
+        fun add(target: Entity, arg: MacroCommand) = add(target, MacroParamType::of, arg)
+        fun add(block: CachedBlockPosition, arg: MacroCommand) = add(block, MacroParamType::of, arg)
+        fun add(value: String, arg: MacroCommand) = add(value, MacroParamType::of, arg)
+        fun add(value: NbtElement, arg: MacroCommand) = add(value, MacroParamType::of, arg)
 
         fun build() = MacroCompletion(parameters)
     }
 }
+
+inline fun macroCompletion(block: MacroCompletion.Builder.()->Unit) = MacroCompletion.builder().apply(block).build()

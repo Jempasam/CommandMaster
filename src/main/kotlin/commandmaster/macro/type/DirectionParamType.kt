@@ -30,9 +30,9 @@ class DirectionParamType(val suffix:String, val stringifier: (Float,Float)->Stri
 
     override fun of(nbt: NbtElement): String? {
         if (nbt is NbtList && nbt.size == 2){
-            if(nbt.type== FLOAT_TYPE)return stringifier(nbt.getFloat(0), nbt.getFloat(1))
+            if(nbt.heldType==FLOAT_TYPE)return stringifier(nbt.getFloat(0), nbt.getFloat(1))
         }
-        else if(nbt is NbtCompound && nbt.size==3){
+        else if(nbt is NbtCompound && nbt.size==2){
             val pitch=(nbt.get("pitch") as? AbstractNbtNumber)?.floatValue() ?: return null
             val yaw=(nbt.get("yaw") as? AbstractNbtNumber)?.floatValue() ?: return null
             return stringifier(yaw,pitch)

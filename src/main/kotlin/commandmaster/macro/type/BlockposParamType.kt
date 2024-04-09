@@ -31,7 +31,7 @@ class BlockposParamType(suffix:String, val stringifier:(BlockPos)->String): Macr
 
     override fun of(nbt: NbtElement): String? {
         if (nbt is NbtList && nbt.size == 3){
-            if (nbt.type == NbtElement.INT_TYPE) {
+            if (nbt.heldType == NbtElement.INT_TYPE) {
                 return stringifier(BlockPos(nbt.getInt(0),nbt.getInt(1),nbt.getInt(2)))
             }
         }
