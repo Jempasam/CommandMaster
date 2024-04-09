@@ -17,7 +17,7 @@ import java.awt.Color
 import java.util.Optional
 import java.util.function.Consumer
 
-data class UpgraderComponent(val target: Optional<TagKey<Item>>, val components: ComponentChanges, val levelCost: Int=1, val showInTooltip: Boolean=true): TooltipAppender {
+data class UpgraderComponent(val target: Optional<TagKey<Item>>, val components: ComponentChanges, val levelCost: Int=1, val showInTooltip: Boolean=true, val merge: Boolean=false): TooltipAppender {
 
     override fun appendTooltip(textConsumer: Consumer<Text>, context: TooltipContext) {
         if(!showInTooltip)return
@@ -39,7 +39,8 @@ data class UpgraderComponent(val target: Optional<TagKey<Item>>, val components:
                 "target" of TagKey.codec(RegistryKeys.ITEM)() getWith UpgraderComponent::target,
                 "components" of ComponentChanges.CODEC getWith UpgraderComponent::components,
                 "levelCost" of Codec.INT(1) getWith UpgraderComponent::levelCost,
-                "showInTooltip" of Codec.BOOL(true) getWith UpgraderComponent::showInTooltip
+                "showInTooltip" of Codec.BOOL(true) getWith UpgraderComponent::showInTooltip,
+                "merge" of Codec.BOOL(false) getWith UpgraderComponent::merge
             ).apply(it, ::UpgraderComponent)
         }
 
