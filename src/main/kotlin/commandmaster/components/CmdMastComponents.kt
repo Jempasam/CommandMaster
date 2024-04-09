@@ -19,7 +19,7 @@ object CmdMastComponents {
     /**
      * Store a macro command execution state.
      */
-    val MACRO_COMPLETION= register<MacroCompletion>("macro_completion"){ MacroCompletion.CODEC }
+    val MACRO_COMPLETION= register<MacroCompletion>("macro_completion"){ codec(MacroCompletion.CODEC) }
 
     /**
      * Is shootable using the hand catapult

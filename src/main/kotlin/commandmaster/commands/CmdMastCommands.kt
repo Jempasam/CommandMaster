@@ -51,7 +51,17 @@ object CmdMastCommands {
                     }
                     else 0
                 }
-            )
+            ).help {
+                Text.literal("""
+                    Give a wand that run a macro command when right clicked.
+                    Each click on a block fill the next macro argument with the block.
+                    Each click on an entity fill the next macro argument with the entity.
+                    Each click on the air fill the next macro argument with the player as entity.
+                    You can right click with the item on an empty slot to create a new wand with the currents macro arguments inlineds;
+                    You can right click on the wand with an item in your inventory to fill the next macro argument with the item.
+                    You can right click on the wand with no item in your inventory to clear the current macro arguments.
+                    """.trimIndent())
+            }
             val ITEM=literal<SCS>("item").then(
                 argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
                     argument<SCS,_>("macro", MacroCommandArgumentType).executes{

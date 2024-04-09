@@ -1,6 +1,7 @@
 package commandmaster.macro.type
 
 import commandmaster.macro.MacroParamType
+import net.minecraft.block.AbstractSignBlock
 import net.minecraft.block.Blocks
 import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.entity.Entity
@@ -29,11 +30,11 @@ object StringParamType: MacroParamType {
 
     override val color=0x77AAFF
 
-    override fun of(entity: Entity) = entity.name.toString()
+    override fun of(entity: Entity) = entity.name.string
 
-    override fun of(block: CachedBlockPosition) = block.blockState.block.name.toString()
+    override fun of(block: CachedBlockPosition) = block.blockState.block.name.string
 
-    override fun of(stack: ItemStack) = stack.name.toString()
+    override fun of(stack: ItemStack) = stack.name.string
 
     override fun of(text: String) = text
 

@@ -37,6 +37,8 @@
   "example.commandmaster.creeper_fire.desc" : "A creeper that explode and set fire.",
   "example.commandmaster.creeper_poison" : "Poison Creeper",
   "example.commandmaster.creeper_poison.desc" : "A creeper that explode into a poison cloud.",
+  "example.commandmaster.creeper_blindness" : "Smoke Creeper",
+  "example.commandmaster.creeper_blindness.desc" : "A creeper that explode into a blinding cloud.",
   "example.commandmaster.creeper_web" : "Web Creeper",
   "example.commandmaster.creeper_web.desc" : "A creeper that explode into cobweb.",
   "example.commandmaster.creeper_zombie" : "Zombie Creeper",
@@ -47,6 +49,8 @@
   "example.commandmaster.creeper_firework.desc" : "A creeper that explode into a firework.",
   "example.commandmaster.creeper_super" : "Super Creeper",
   "example.commandmaster.creeper_super.desc" : "A creeper that explode many exploding bats.",
+  "example.commandmaster.creeper_breaker" : "Breeker",
+  "example.commandmaster.creeper_breaker.desc" : "A creeper that explode destroying everything around.",
 
   "example.commandmaster.team_blue": "Blue Team",
   "example.commandmaster.team_blue.desc": "Join the sea blue team",

@@ -54,17 +54,17 @@ data class MacroCommand(val command: String): TooltipAppender {
             var type: MacroParamType?=null
 
             // Get num
-            if(part[i] in '0'..<'9') {
+            if(part[i] in '0'..'9') {
                 argnum=part[i]-'0'
                 i++
             }
 
             // Get type
-            if(part.length>1){
+            if(part.length>i+1){
                 type = MacroParamType.TYPES[part.substring(i, i+2)]
                 if(type!=null)i+=2
             }
-            if(type==null && part.length>0){
+            if(type==null && part.length>i){
                 type = MacroParamType.TYPES[part.substring(i, i+1)]
                 if(type!=null)i+=1
             }
@@ -94,7 +94,7 @@ data class MacroCommand(val command: String): TooltipAppender {
 
     inline fun visit(on_part: (String)->Unit, on_param: (MacroParamType, Int)->Unit){
         on_part(str_parts[0])
-        for(i in 0 until parameters.size){
+        for(i in param_parts.indices){
             on_param(param_parts[i].first, param_parts[i].second)
             on_part(str_parts[i+1])
         }
@@ -148,9 +148,9 @@ data class MacroCommand(val command: String): TooltipAppender {
                 if(value===INVALID) return Result.failure(MacroCompletion.IncompatibleCompletion)
                 else result+=value
             },
-            {param, _->
+            {param, num->
                 val letter=MacroParamType.TYPES.getKey(param)
-                result+="$$letter"
+                result+="$${num-params.size}$letter"
             }
         )
         return Result.success(MacroCommand(result))
@@ -161,7 +161,7 @@ data class MacroCommand(val command: String): TooltipAppender {
         visit(params,
             {part-> result.append(Text.literal(part))},
             {value,type, _-> result.append(Text.literal(value).withColor(type.color))},
-            {param, _-> result.append(Text.literal("$${param.name}").withColor(param.color))}
+            {param, pos-> result.append(Text.literal("$$pos${param.name}").withColor(param.color))}
         )
         return result
     }
@@ -180,7 +180,7 @@ data class MacroCommand(val command: String): TooltipAppender {
         val result= Text.empty()
         visit(
             {part-> result.append(Text.literal(part))},
-            {param,_-> result.append(Text.literal("$${MacroParamType.TYPES.getKey(param)}").withColor(param.color))}
+            {param,pos-> result.append(Text.literal("$$pos${MacroParamType.TYPES.getKey(param)}").withColor(param.color))}
         )
         return result
     }
@@ -189,7 +189,7 @@ data class MacroCommand(val command: String): TooltipAppender {
         val result= Text.empty()
         visit(
             {part-> result.append(Text.literal(part))},
-            {param,_-> result.append(Text.literal("$${param.name}").withColor(param.color))}
+            {param,pos-> result.append(Text.literal("$$pos${param.name}").withColor(param.color))}
         )
         return result
     }

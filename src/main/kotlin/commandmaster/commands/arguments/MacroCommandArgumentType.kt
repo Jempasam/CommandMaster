@@ -24,23 +24,32 @@ object MacroCommandArgumentType: ArgumentType<String> {
         val ret=reader.remaining
         reader.cursor=reader.totalLength
 
-        var pos=0
+        var size=0
         var word=""
+        fun check() = MacroParamType.TYPES[word.take(1)] ?: MacroParamType.TYPES[word]?: throw IllegalArgumentException("Invalid macro argument type: \"$word\"")
         ret.forEach {
-            if(pos==3){
-                MacroParamType.TYPES[word.take(1)] ?: MacroParamType.TYPES[word]?: throw IllegalArgumentException("Invalid macro argument type: \"$it\"")
+            if(it=='$'){
+                if(word.isNotEmpty())check()
                 word=""
-                pos=0
+                size=1
             }
-            else if(pos>0){
-                pos++
+            else if(size==1 && it in '0'..'9'){
+                size++
+            }
+            else if(size>0){
                 word+=it
+                size++
             }
-            else if(it=='$') pos=1
+            if(word.length>=2){
+                check()
+                word=""
+                size=0
+            }
         }
-        if(pos==1)throw IllegalArgumentException("Expected macro argument type after macro argument symbol \"$\"")
-        else if(pos==2)MacroParamType.TYPES[word] ?: throw IllegalArgumentException("Invalid macro argument type: \"$word\"")
-
+        if(size>0){
+            if(word.isNotEmpty())check()
+            else throw IllegalArgumentException("Expected macro argument type after macro argument symbol \"$\"")
+        }
         return ret
     }
 
@@ -56,12 +65,22 @@ object MacroCommandArgumentType: ArgumentType<String> {
                 val command=stringReader.remaining
 
                 // Last is arg
-                if(command.isNotEmpty() && command.last()=='$'){
-                    return CompletableFuture.supplyAsync {
-                        val builder=builder.createOffset(builder.start+command.length-1)
-                        builder.createOffset(command.length-1)
-                        for((key,arg) in MacroParamType.TYPES)builder.suggest("\$$key")
-                        builder.build()
+                if(command.isNotEmpty()){
+                    if(command.last()=='$'){
+                        return CompletableFuture.supplyAsync {
+                            val builder=builder.createOffset(builder.start+command.length-1)
+                            builder.createOffset(command.length-1)
+                            for((key,arg) in MacroParamType.TYPES)builder.suggest("\$$key")
+                            builder.build()
+                        }
+                    }
+                    else if(command.length>1 && command.get(command.length-2)=='$' && command.last() in '0'..'9'){
+                        return CompletableFuture.supplyAsync {
+                            val builder=builder.createOffset(builder.start+command.length-2)
+                            builder.createOffset(command.length-2)
+                            for((key,arg) in MacroParamType.TYPES)builder.suggest("\$${command.last()}$key")
+                            builder.build()
+                        }
                     }
                 }
                 Enchantments.THORNS

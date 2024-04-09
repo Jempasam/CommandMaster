@@ -1,16 +1,7 @@
 package commandmaster.utils.builders
 
-import net.minecraft.nbt.NbtByte
-import net.minecraft.nbt.NbtByteArray
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtDouble
-import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtFloat
-import net.minecraft.nbt.NbtInt
-import net.minecraft.nbt.NbtIntArray
-import net.minecraft.nbt.NbtList
-import net.minecraft.nbt.NbtLong
-import net.minecraft.nbt.NbtString
+import net.minecraft.nbt.*
+import net.minecraft.nbt.scanner.NbtScanner
 
 
 // Litterals
@@ -41,3 +32,5 @@ fun nbt(vararg values: Long) = NbtList().apply{ for(value in values)this.add(Nbt
 fun nbt(vararg values: String) = NbtList().apply{ for(value in values)this.add(NbtString.of(value)) }
 fun nbt(vararg values: Float) = NbtList().apply{ for(value in values)this.add(NbtFloat.of(value)) }
 fun nbt(vararg values: Double) = NbtList().apply{ for(value in values)this.add(NbtDouble.of(value)) }
+
+fun String.asNbt() = StringNbtReader.parse(this)

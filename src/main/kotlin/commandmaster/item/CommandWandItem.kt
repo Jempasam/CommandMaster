@@ -12,6 +12,8 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.inventory.StackReference
+import net.minecraft.item.BundleItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
@@ -36,23 +38,30 @@ class CommandWandItem(settings: Settings) : Item(settings) {
         server?.let { MacroCommand.executeMultiline(it,player.commandSource.withMaxLevel(3).withSilent(),command) }
     }
 
+    fun<T> fill(stack: ItemStack, value: T, messager: (Text)->Unit, converter: MacroParamType.(T)->String?): ActionResult{
+        val macro= stack.get(MACRO_HOLDER) ?: return ActionResult.FAIL
+
+        val completion=stack.get(MACRO_COMPLETION) ?: MacroCompletion()
+        if(completion.size<macro.parameters.size){
+            try{
+                stack.set(MACRO_COMPLETION, completion.modify{add(value,converter, macro)})
+            }catch(e: MacroCompletion.InvalidTarget){
+                messager(CommandMaster.translatable("message","invalid_target").formatted(Formatting.RED))
+                return ActionResult.FAIL
+            }
+        }
+        return ActionResult.SUCCESS
+    }
+
     fun<T> getAndCast(player:PlayerEntity?, world: World, stack: ItemStack, hand: Hand, value: T, converter: MacroParamType.(T)->String?): ActionResult {
         if(player !is ServerPlayerEntity)return ActionResult.SUCCESS
         if(world !is ServerWorld)return ActionResult.SUCCESS
 
-        val macro=stack.get(MACRO_HOLDER)
-        if(macro==null)return ActionResult.FAIL
+        val result=fill(stack,value,player::sendMessage,converter)
+        if(result==ActionResult.FAIL)return result
 
-        val completion=stack.get(MACRO_COMPLETION) ?: MacroCompletion()
-        if(completion.size<macro.parameters.size){
-            val arg=macro.parameters[completion.size]
-            try{
-                stack.set(MACRO_COMPLETION, completion.modify{add(value,converter, arg)})
-            }catch(e: MacroCompletion.InvalidTarget){
-                player.sendMessage(CommandMaster.translatable("message","invalid_target").formatted(Formatting.RED))
-                return ActionResult.FAIL
-            }
-        }
+        player.setStackInHand(hand,stack)
+
         tryToCast(player,world.server, hand, stack)
         return ActionResult.SUCCESS
     }
@@ -70,6 +79,20 @@ class CommandWandItem(settings: Settings) : Item(settings) {
         return getAndCast(player, player.world, stack, hand, player, MacroParamType::of)
             .let { TypedActionResult(it,stack) }
     }
+
+    override fun onClicked(stack: ItemStack, otherStack: ItemStack, slot: Slot, clickType: ClickType, player: PlayerEntity, cursorStackReference: StackReference): Boolean {
+        if(clickType==ClickType.RIGHT){
+            if(otherStack.isEmpty){
+                stack.set(MACRO_COMPLETION, MacroCompletion())
+            }
+            else{
+                fill(stack, otherStack, player::sendMessage, MacroParamType::of)
+            }
+            return true
+        }
+        else return false
+    }
+
 
     override fun onStackClicked(stack: ItemStack, slot: Slot, clickType: ClickType, player: PlayerEntity): Boolean {
         if(clickType==ClickType.RIGHT){

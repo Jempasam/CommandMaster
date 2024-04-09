@@ -163,12 +163,20 @@ object CmdMastItemGroup {
                 "multi (effect give @e[distance=..3] minecraft:poison 20 0 ; particle minecraft:dust 0 0.5 0 3 ~ ~ ~ 1.5 1.5 1.5 1 100)"
             )
 
+            creeper(ENDERMITE_SPAWN_EGG, "blindness", -12763847,
+                "multi (effect give @e[distance=..3] minecraft:blindness 20 0 ; particle campfire_cosy_smoke ~ ~1 ~ 0 0.5 0 0.2 100)"
+            )
+
             creeper(GHAST_SPAWN_EGG, "web", -2697514,
                 "fill ~-1 ~-1 ~-1 ~1 ~1 ~1 minecraft:cobweb replace #replaceable"
             )
 
             creeper(ZOMBIE_SPAWN_EGG, "zombie", -11907030,
                 "multi (summon zombie;summon skeleton;summon zombie;summon zombie)"
+            )
+
+            creeper(VILLAGER_SPAWN_EGG, "breaker", -7707835,
+                "fill ~-2 ~-2 ~-2 ~2 ~2 ~2 air destroy"
             )
 
             creeper(
