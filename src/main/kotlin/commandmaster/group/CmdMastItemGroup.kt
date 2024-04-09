@@ -230,6 +230,9 @@ object CmdMastItemGroup {
                         - /command
                         - /get_color
                         - /multi
+                        - /repeat
+                        - /macro
+                        - /fetch_nbt
                         Use "/command example" while holding any example item to learn how it works.
                     """.trimIndent()))
                 ),

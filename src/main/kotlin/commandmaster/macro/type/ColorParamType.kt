@@ -35,7 +35,7 @@ object ColorParamType: MacroParamType {
 
     override fun of(stack: ItemStack) = if(stack.isEmpty) stack.item.color.toString() else null
 
-    override fun of(text: String) = Formatting.valueOf(text)?.takeIf { it.isColor }?.colorValue?.toString()
+    override fun of(text: String) = runCatching { Formatting.valueOf(text.uppercase()) }.getOrNull() ?.takeIf { it.isColor } ?.colorValue ?.toString()
 
     override fun of(nbt: NbtElement): String?{
         if(nbt is NbtString) return of(nbt.asString())

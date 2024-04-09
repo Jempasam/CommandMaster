@@ -17,16 +17,21 @@ import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroCompletion
 import commandmaster.macro.MacroParamType
 import commandmaster.network.NbtFetcher
+import commandmaster.utils.commands.help
 import commandmaster.utils.nbt.toText
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.block.entity.CommandBlockBlockEntity
+import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.command.argument.BlockPosArgumentType
+import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.command.argument.IdentifierArgumentType
 import net.minecraft.command.argument.ItemStackArgumentType
+import net.minecraft.command.argument.NbtElementArgumentType
 import net.minecraft.command.argument.NbtPathArgumentType
 import net.minecraft.component.Component
 import net.minecraft.nbt.NbtOps
 import net.minecraft.registry.Registries
+import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.command.ServerCommandSource as SCS
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
@@ -37,98 +42,11 @@ import kotlin.jvm.optionals.getOrNull
 
 object CmdMastCommands {
     init{
+        CommandRegistrationCallback.EVENT.register(MacroCommands)
         CommandRegistrationCallback.EVENT.register{ disp, reg, man ->
 
             // Action that give item
-            val WAND=literal<SCS>("wand").then(
-                argument<SCS,_>("macro", MacroCommandArgumentType).executes{
-                    val player=it.source.player
-                    if(player!=null){
-                        val stack=CmdMastItems.COMMAND_WAND.defaultStack
-                        stack.set(CmdMastComponents.MACRO_HOLDER,MacroCommand(it.getArgument("macro",String::class.java)))
-                        player.giveItemStack(stack)
-                        1
-                    }
-                    else 0
-                }
-            ).help {
-                Text.literal("""
-                    Give a wand that run a macro command when right clicked.
-                    Each click on a block fill the next macro argument with the block.
-                    Each click on an entity fill the next macro argument with the entity.
-                    Each click on the air fill the next macro argument with the player as entity.
-                    You can right click with the item on an empty slot to create a new wand with the currents macro arguments inlineds;
-                    You can right click on the wand with an item in your inventory to fill the next macro argument with the item.
-                    You can right click on the wand with no item in your inventory to clear the current macro arguments.
-                    """.trimIndent())
-            }
-            val ITEM=literal<SCS>("item").then(
-                argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
-                    argument<SCS,_>("macro", MacroCommandArgumentType).executes{
-                        val player=it.source.player
-                        if(player!=null){
-                            val stack=ItemStackArgumentType.getItemStackArgument(it,"item").createStack(1,true)
-                            stack.set(CmdMastComponents.MACRO_HOLDER,MacroCommand(it.getArgument("macro",String::class.java)))
-                            player.giveItemStack(stack)
-                            1
-                        }
-                        else 0
-                    }
-                )
-            )
-            val THORNS=literal<SCS>("thorns").then(
-                argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
-                    argument<SCS,_>("macro", MacroCommandArgumentType).executes{
-                        val player=it.source.player
-                        if(player!=null){
-                            val stack=ItemStackArgumentType.getItemStackArgument(it,"item").createStack(1,true)
-                            stack.addEnchantment(CmdMastEnchantments.MACRO_THORNS,1)
-                            stack.set(CmdMastComponents.MACRO_HOLDER,MacroCommand(it.getArgument("macro",String::class.java)))
-                            player.giveItemStack(stack)
-                            1
-                        }
-                        else 0
-                    }
-                )
-            ).help {
-                Text.of("Give an item that call a macro when the wearer is attacked with the attacking entity as parameters.")
-            }
-            val ATTACK=literal<SCS>("attack").then(
-                argument<SCS,_>("item",ItemStackArgumentType.itemStack(reg)).then(
-                    argument<SCS,_>("macro", MacroCommandArgumentType).executes{
-                        val player=it.source.player
-                        if(player!=null){
-                            val stack=ItemStackArgumentType.getItemStackArgument(it,"item").createStack(1,true)
-                            stack.addEnchantment(CmdMastEnchantments.MACRO_ATTACK,1)
-                            stack.set(CmdMastComponents.MACRO_HOLDER,MacroCommand(it.getArgument("macro",String::class.java)))
-                            player.giveItemStack(stack)
-                            1
-                        }
-                        else 0
-                    }
-                )
-            ).help {
-                Text.of("Give an item that call a macro a attack with attacked entity as parameters.")
-            }
-            val MACHINE=literal<SCS>("machine").then(
-                argument<SCS,_>("macro", MacroCommandArgumentType).executes{
-                    val player=it.source.player
-                    if(player!=null){
-                        val stack=CmdMastItems.MACHINE_BLOCK.defaultStack
-                        stack.set(CmdMastComponents.MACRO_HOLDER,MacroCommand(it.getArgument("macro",String::class.java)))
-                        player.giveItemStack(stack)
-                        1
-                    }
-                    else 0
-                }
-            )
-            val SHOW=literal<SCS>("show").then(
-                argument<SCS,_>("macro", MacroCommandArgumentType).executes{
-                    val macro=MacroCommand(it.getArgument("macro",String::class.java))
-                    it.source.sendMessage(macro.text)
-                    macro.parameters.size
-                }
-            )
+
 
             val EXAMPLE=literal<SCS>("example").executes{
                 val player=it.source.player
@@ -155,13 +73,44 @@ object CmdMastCommands {
                 Text.of("Show the components of the item in the main hand of the player. Use it to see how the example items are made.")
             }
 
+            fun<T> give_do(context: CommandContext<SCS>, getter: ()->T?, of: MacroParamType.(T)->String?): Int{
+                val player=context.source.player
+                if(player==null){
+                    context.source.sendError(Text.of("Need Player!"))
+                    return 0
+                }
+
+                var stack=player.mainHandStack
+                if(stack.isEmpty || stack.item!=CmdMastItems.COMMAND_WAND)stack=player.offHandStack
+                if(stack.isEmpty || stack.item!=CmdMastItems.COMMAND_WAND){
+                    context.source.sendError(Text.of("Need a wand in hand!"))
+                    return 0
+                }
+
+                val macro=stack.get(CmdMastComponents.MACRO_HOLDER)
+                if(macro==null) {
+                    context.source.sendError(Text.of("Need a macro in the wand!"))
+                    return 0
+                }
+
+                val compo=stack.get(CmdMastComponents.MACRO_COMPLETION) ?: MacroCompletion()
+                if(compo.size<macro.parameters.size){
+                    val value=getter()
+                    if(value==null){
+                        context.source.sendError(Text.of("Invalid target, not found!"))
+                        return 0
+                    }
+                    try{
+                        stack.set(CmdMastComponents.MACRO_COMPLETION,compo.builder().add(value,of,macro).build())
+                    }catch (e:Exception){
+                        context.source.sendError(Text.of("Error: ${e.message}"))
+                        return 0
+                    }
+                }
+                return 1
+            }
+
             val COMMAND= literal<SCS>("command").requires {it.hasPermissionLevel(2)}
-                .then(WAND)
-                .then(SHOW)
-                .then(MACHINE)
-                .then(ITEM)
-                .then(THORNS)
-                .then(ATTACK)
                 .then(EXAMPLE)
                 .help {
                     val message=Text.literal("""
@@ -327,13 +276,5 @@ object CmdMastCommands {
             disp.register(RUNSTACK)
             disp.register(MULTI)
         }
-    }
-
-    private fun<T : ArgumentBuilder<SCS, T>> T.help(msg:(CommandContext<SCS>)->Text): T{
-        this.then(literal<SCS>("help").executes{
-            it.source.sendMessage(msg(it))
-            1
-        })
-        return this
     }
 }
