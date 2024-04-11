@@ -240,7 +240,7 @@ object MacroCommands: CommandRegistrationCallback {
                             """.trimIndent())
                 for((key,param) in MacroParamType.TYPES){
                     val value=it.source.player?.let { ", Example: "+param.of(it) } ?: ""
-                    message.append("\n - ").append(Text.literal("$$key, ${param.name}$value)").withColor(param.color))
+                    message.append("\n - ").append(Text.literal("$$key, ${param.name}$value").withColor(param.color))
                 }
                 message
             }

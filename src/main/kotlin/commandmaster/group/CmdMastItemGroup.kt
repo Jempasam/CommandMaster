@@ -153,27 +153,27 @@ object CmdMastItemGroup {
             }
 
             creeper(BLAZE_SPAWN_EGG, "lightning", -1188790,
-                "summon lightning_bolt"
+                "for_at ~-\$n ~ ~-\$n ~\$n ~ ~\$n summon lightning_bolt"
             )
 
             creeper(FROG_SPAWN_EGG, "fire", -1674473,
-                "summon minecraft:fireball ~ ~ ~ {Motion:[0.0,-1.0,0.0],ExplosionPower:3}"
+                "repeat \$+n summon minecraft:fireball ~ ~ ~ {Motion:[0.0,-1.0,0.0],ExplosionPower:3}"
             )
 
             creeper(ZOMBIE_HORSE_SPAWN_EGG, "poison", -11112428,
-                "multi (effect give @e[distance=..3] minecraft:poison 20 0 ; particle minecraft:dust 0 0.5 0 3 ~ ~ ~ 1.5 1.5 1.5 1 100)"
+                "multi (effect give @e[distance=..3] minecraft:poison 20 \$n ; particle minecraft:dust 0 0.5 0 3 ~ ~ ~ 1.5 1.5 1.5 1 100)"
             )
 
             creeper(ENDERMITE_SPAWN_EGG, "blindness", -12763847,
-                "multi (effect give @e[distance=..3] minecraft:blindness 20 0 ; particle campfire_cosy_smoke ~ ~1 ~ 0 0.5 0 0.2 100)"
+                "multi (effect give @e[distance=..3] minecraft:blindness \$n20 0 ; particle campfire_cosy_smoke ~ ~1 ~ 0 0.5 0 0.2 100)"
             )
 
             creeper(GHAST_SPAWN_EGG, "web", -2697514,
-                "fill ~-1 ~-1 ~-1 ~1 ~1 ~1 minecraft:cobweb replace #replaceable"
+                "multi (fill ~-\$+n ~-\$+n ~-\$+n ~\$+n ~\$+n ~\$+n minecraft:cobweb replace #replaceable)"
             )
 
             creeper(ZOMBIE_SPAWN_EGG, "zombie", -11907030,
-                "multi (summon zombie;summon skeleton;summon zombie;summon zombie)"
+                "repeat \$+n multi (repeat 3 summon zombie;repeat 1 summon skeleton)"
             )
 
             creeper(VILLAGER_SPAWN_EGG, "breaker", -7707835,
@@ -182,17 +182,17 @@ object CmdMastItemGroup {
 
             creeper(
                 ENDERMAN_SPAWN_EGG, "dragon", -4914979,
-                "summon dragon_fireball ~ ~ ~ {Motion:[0.,-1.,0.]}"
+                "repeat \$+n summon dragon_fireball ~ ~ ~ {Motion:[0.,-1.,0.]}"
             )
 
             creeper(
                 CHICKEN_SPAWN_EGG, "firework", -1857861,
-                "multi (particle minecraft:firework ~ ~1 ~ 0 0 0 0.2 300 ;particle minecraft:flash)"
+                "repeat \$+n multi (particle minecraft:firework ~ ~1 ~ 0 0 0 0.2 300 ;particle minecraft:flash)"
             )
 
             creeper(
                 SPIDER_SPAWN_EGG, "super", -11532537,
-                "repeat 5 summon minecraft:bat ~ ~ ~ {Passengers:[{id:\"tnt\",fuse:200}]}"
+                "repeat \$+n repeat 5 summon minecraft:bat ~ ~ ~ {Passengers:[{id:\"tnt\",fuse:200}]}"
             )
 
             // Team

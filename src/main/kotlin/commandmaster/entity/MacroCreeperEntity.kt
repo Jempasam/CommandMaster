@@ -3,6 +3,8 @@ package commandmaster.entity
 import commandmaster.entity.trait.MacroHolder
 import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroCompletion
+import commandmaster.macro.MacroParamType
+import commandmaster.macro.macroCompletion
 import commandmaster.utils.entity.dataTracked
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.data.DataTracker
@@ -20,7 +22,11 @@ class MacroCreeperEntity(entityType: EntityType<out MacroCreeperEntity>, world: 
 
     override fun explode() {
         if (!world.isClient) {
-            macro.build(MacroCompletion()).onSuccess{ command->
+            val power=if(shouldRenderOverlay()) "1" else "0"
+            val completion= macroCompletion {
+                macro.parameters.forEach { add(power, MacroParamType::of,it) }
+            }
+            macro.build(completion).onSuccess{ command->
                 val server=world.server
                 if(server!=null){
                     MacroCommand.executeMultiline(server,commandSource.withLevel(2).withSilent(),command)

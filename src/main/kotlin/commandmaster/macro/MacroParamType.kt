@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtElement
 import net.minecraft.registry.Registries
+import net.minecraft.server.function.Macro
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 
@@ -27,6 +28,7 @@ interface MacroParamType{
     fun of(stack: ItemStack): String?
     fun of(text: String): String?
     fun of(nbt: NbtElement): String?
+
 
     companion object{
         val TYPES= biMapOf<_,MacroParamType>(
@@ -48,7 +50,10 @@ interface MacroParamType{
             "b" to BlockParamType,
             "i" to ItemParamType,
             "c" to ColorParamType,
-            "t" to StringParamType
+            "t" to StringParamType,
+            "n" to IntParamType(0),
+            "+n" to IntParamType(1),
+            "-n" to IntParamType(-1),
         )
     }
 }
