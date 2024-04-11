@@ -1,8 +1,7 @@
 package commandmaster.block
 
 import commandmaster.blockentity.CmdMastBlockEntities
-import commandmaster.blockentity.FullComponentBlockEntity
-import commandmaster.blockentity.getComponentBlockEntity
+import commandmaster.blockentity.get
 import commandmaster.components.CmdMastComponents
 import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroCompletion
@@ -52,7 +51,7 @@ class MachineBlock(settings: Settings) : BlockWithEntity(settings) {
     }
 
     override fun scheduledTick(state: BlockState, world: ServerWorld, pos: BlockPos, random: Random?) {
-        val bentity = world.getComponentBlockEntity(pos)
+        val bentity = world.getBlockEntity(pos)
         val macro = bentity?.get(CmdMastComponents.MACRO_HOLDER)
         if (macro != null) {
             val command=macro.build(MacroCompletion())
@@ -96,7 +95,7 @@ class MachineBlock(settings: Settings) : BlockWithEntity(settings) {
     override fun getPickStack(world: WorldView, pos: BlockPos, state: BlockState): ItemStack {
         val ret=super.getPickStack(world, pos, state)
         fun<T> put(comp: Component<T>)= ret.set(comp.type,comp.value)
-        world.getComponentBlockEntity(pos)?.createComponentMap()?.let { ret.applyComponentsFrom(it) }
+        world.getBlockEntity(pos)?.createComponentMap()?.let { ret.applyComponentsFrom(it) }
         return ret
     }
 

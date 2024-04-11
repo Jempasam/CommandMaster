@@ -2,7 +2,7 @@ package commandmaster.item
 
 import commandmaster.macro.MacroUtils
 import net.minecraft.block.Block
-import net.minecraft.client.item.TooltipContext
+import net.minecraft.client.item.TooltipType
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
@@ -12,9 +12,9 @@ class CommandBlockItem(block: Block, settings: Settings) : BlockItem(block, sett
 
     override fun getName(stack: ItemStack) = MacroUtils.getName(stack).append(" ").append(super.getName(stack))
 
-    override fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-        super.appendTooltip(stack, world, tooltip, context)
-        MacroUtils.appendTooltip(stack,world,tooltip,context)
+    override fun appendTooltip(stack: ItemStack, context: TooltipContext, tooltip: MutableList<Text>, type: TooltipType) {
+        super.appendTooltip(stack, context, tooltip, type)
+        MacroUtils.appendTooltip(stack, context, tooltip, type)
     }
 
 }

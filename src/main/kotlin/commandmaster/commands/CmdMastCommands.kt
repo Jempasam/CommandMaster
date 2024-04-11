@@ -2,15 +2,13 @@ package commandmaster.commands
 
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.*
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.*
 import com.mojang.brigadier.context.CommandContext
-import commandmaster.blockentity.FullComponentBlockEntity
+import commandmaster.blockentity.SimpleBlockEntity
 import commandmaster.commands.arguments.MacroCommandArgumentType
 import commandmaster.commands.arguments.MultiCommandArgumentType
 import commandmaster.components.CmdMastComponents
-import commandmaster.enchantments.CmdMastEnchantments
 import commandmaster.files.FileSystem
 import commandmaster.item.CmdMastItems
 import commandmaster.macro.MacroCommand
@@ -20,19 +18,13 @@ import commandmaster.network.NbtFetcher
 import commandmaster.utils.commands.help
 import commandmaster.utils.nbt.toText
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
-import net.minecraft.block.Block
 import net.minecraft.block.entity.CommandBlockBlockEntity
-import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.command.argument.BlockPosArgumentType
-import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.command.argument.IdentifierArgumentType
-import net.minecraft.command.argument.ItemStackArgumentType
-import net.minecraft.command.argument.NbtElementArgumentType
 import net.minecraft.command.argument.NbtPathArgumentType
 import net.minecraft.component.Component
 import net.minecraft.nbt.NbtOps
 import net.minecraft.registry.Registries
-import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.server.command.ServerCommandSource as SCS
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
@@ -202,7 +194,7 @@ object CmdMastCommands {
                             command=blockentity.commandExecutor.command
                             it.source.server.commandManager.executeWithPrefix(it.source,command)
                         }
-                        else if(blockentity is FullComponentBlockEntity){
+                        else if(blockentity is SimpleBlockEntity){
                             command= blockentity.get(CmdMastComponents.MACRO_HOLDER) ?.build(MacroCompletion()) ?.getOrNull() ?: break
                             MacroCommand.executeMultiline(it.source.server,it.source,command)
                         }

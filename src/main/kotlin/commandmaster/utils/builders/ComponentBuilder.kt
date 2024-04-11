@@ -52,7 +52,7 @@ value class ComponentsBuilder(val stack: Target){
         stack.set(DataComponentTypes.ENCHANTMENTS, map.build())
     }
     fun<T> add(type: DataComponentType<T>, value: T) = stack.set(type, value)
-    fun edible(hunger: Int=2) = add(DataComponentTypes.FOOD, FoodComponent.Builder().hunger(hunger).saturationModifier(0.6f).build())
+    fun edible(hunger: Int=2, saturation: Float=1f) = add(DataComponentTypes.FOOD, FoodComponent.Builder().nutrition(hunger).saturationModifier(saturation).build())
     fun model(data: Int) = stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelDataComponent(data))
 
     fun giving(target: TagKey<Item>?=null, merge: Boolean=false, show: Boolean=true, levelCost: Int=1, builder: ComponentsBuilder.()->Unit) {

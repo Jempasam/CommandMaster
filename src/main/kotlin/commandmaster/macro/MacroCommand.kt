@@ -1,24 +1,17 @@
 package commandmaster.macro
 
-import com.mojang.serialization.Codec
-import commandmaster.codec.getWith
-import commandmaster.codec.of
 import com.mojang.serialization.Codec.*
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import commandmaster.commands.arguments.MacroCommandArgumentType
 import commandmaster.helper.overflow
 import commandmaster.utils.builders.nbt
-import net.minecraft.client.item.TooltipContext
+import net.minecraft.client.item.TooltipType
+import net.minecraft.item.Item
 import net.minecraft.item.TooltipAppender
-import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtList
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import java.util.function.Consumer
 import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Represent a macro command.
@@ -203,9 +196,8 @@ data class MacroCommand(val command: String): TooltipAppender {
         return result.toString()
     }
 
-    override fun appendTooltip(textConsumer: Consumer<Text>, context: TooltipContext) {
-        if(context.isAdvanced){
-            //textConsumer.accept(text.overflow(40,"...").styled{it.withItalic(false)})
+    override fun appendTooltip(context: Item.TooltipContext, textConsumer: Consumer<Text>, type: TooltipType) {
+        if(type.isAdvanced){
             textConsumer.accept(colored_command.overflow(40,"..."))
         }
     }

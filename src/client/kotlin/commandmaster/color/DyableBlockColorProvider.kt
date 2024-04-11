@@ -1,6 +1,7 @@
 package commandmaster.color
 
-import commandmaster.blockentity.getComponentBlockEntity
+
+import commandmaster.blockentity.get
 import net.minecraft.block.BlockState
 import net.minecraft.client.color.block.BlockColorProvider
 import net.minecraft.client.color.item.ItemColorProvider
@@ -15,7 +16,7 @@ import net.minecraft.world.BlockRenderView
 object DyableBlockColorProvider: BlockColorProvider {
     override fun getColor(state: BlockState, world: BlockRenderView?, pos: BlockPos?, tintIndex: Int): Int {
         if(pos!=null && world!=null && tintIndex==0) {
-            world.getComponentBlockEntity(pos)
+            world.getBlockEntity(pos)
                 ?.get(DataComponentTypes.DYED_COLOR)
                 ?.rgb
                 ?.let { return Argb.fullAlpha(it) }

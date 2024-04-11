@@ -2,7 +2,8 @@ package commandmaster.macro
 
 import commandmaster.components.CmdMastComponents
 import commandmaster.helper.overflow
-import net.minecraft.client.item.TooltipContext
+import net.minecraft.client.item.TooltipType
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
@@ -18,7 +19,7 @@ object MacroUtils {
         return macro_name.append(Text.of(" ($state_max/$macro_max)"))
     }
 
-    fun appendTooltip(stack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
+    fun appendTooltip(stack: ItemStack, context: Item.TooltipContext, tooltip: MutableList<Text>, type: TooltipType) {
         val state=stack.get(CmdMastComponents.MACRO_COMPLETION) ?: MacroCompletion()
         val macro=stack.get(CmdMastComponents.MACRO_HOLDER)?.also { macro ->
             tooltip.add(macro.textWith(state).overflow(40,"...").styled{it.withItalic(false)})

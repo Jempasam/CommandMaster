@@ -20,14 +20,12 @@ object CmdMastBlockEntities {
 
     val MACHINE_BLOCK = component(
         "machine_block",
-        ComponentMap.EMPTY,
-        listOf(DataComponentTypes.CUSTOM_NAME,CmdMastComponents.MACRO_HOLDER, DataComponentTypes.DYED_COLOR),
         CmdMastBlocks.MACHINE_BLOCK
     )
 
-    fun component(id: String, base: ComponentMap, loaded: List<DataComponentType<*>>, vararg  blocks: Block)
+    fun component(id: String, vararg  blocks: Block)
         =register(id, *blocks){type, pos, state ->
-            FullComponentBlockEntity(type, pos, state, base, loaded)
+            SimpleBlockEntity(type, pos, state)
         }
 
     fun <T : BlockEntity> register(id: String, vararg blocks: Block, factory: (BlockEntityType<T>,BlockPos,BlockState)->T) : BlockEntityType<T> {
