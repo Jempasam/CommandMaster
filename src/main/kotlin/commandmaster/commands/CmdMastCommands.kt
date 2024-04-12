@@ -39,6 +39,7 @@ import kotlin.math.min
 object CmdMastCommands {
     init{
         CommandRegistrationCallback.EVENT.register(MacroCommands)
+        CommandRegistrationCallback.EVENT.register(CmdMastExecuteCommands)
         CommandRegistrationCallback.EVENT.register{ disp, reg, man ->
 
             // Action that give item
@@ -220,34 +221,6 @@ object CmdMastCommands {
                 Text.of("Run multiple commands separated by semicolons.")
             }
 
-            val REPEAT= literal<SCS>("repeat").then(
-                argument<SCS,_>("count",IntegerArgumentType.integer(1)).fork(disp.root){ context ->
-                    List(IntegerArgumentType.getInteger(context,"count")){context.source}
-                }
-            )
-
-            val FOR_AT= literal<SCS>("for_at").then(
-                argument<SCS,_>("from",BlockPosArgumentType.blockPos()).then(
-                    argument<SCS,_>("to",BlockPosArgumentType.blockPos()).fork(disp.root){ context ->
-                        val from=BlockPosArgumentType.getBlockPos(context,"from")
-                        val to=BlockPosArgumentType.getBlockPos(context,"to")
-                        val mx= min(from.x,to.x)
-                        val my= min(from.y,to.y)
-                        val mz= min(from.z,to.z)
-                        val dx= abs(to.x-from.x)+1
-                        val dy= abs(to.y-from.y)+1
-                        val dz= abs(to.z-from.z)+1
-                        val count=dx*dy*dz
-                        List(count){
-                            val x=it%dx+mx
-                            val y=(it/dx)%dy+my
-                            val z=it/(dx*dy)+mz
-                            context.source.withPosition(Vec3d(x+0.5,y+0.5,z+0.5))
-                        }
-                    }
-                )
-            )
-
             val FIX= literal<SCS>("fix").then(
                 argument<SCS,_>("pos",BlockPosArgumentType.blockPos()).then(
                     argument<SCS,_>("regex",StringArgumentType.string()).then(
@@ -318,11 +291,9 @@ object CmdMastCommands {
             disp.register(COMMAND)
             disp.register(FETCHNBT)
             disp.register(FIX)
-            disp.register(FOR_AT)
-            disp.register(REPEAT)
-            //disp.register(FILE)
             disp.register(RUNSTACK)
             disp.register(MULTI)
+
         }
     }
 }

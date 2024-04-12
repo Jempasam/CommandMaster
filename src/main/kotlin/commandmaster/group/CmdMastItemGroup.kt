@@ -82,7 +82,7 @@ object CmdMastItemGroup {
             add(COMMAND_WAND){ name("xray"); color(255,255,0); model(19); macro("effect give @e[distance=1..30] minecraft:glowing 10") }
             add(COMMAND_WAND){ name("snow"); color(255,255,255); model(5); macro("execute positioned \$p run summon minecraft:snow_golem ~ ~1 ~") }
             add(COMMAND_WAND){ name("iron"); color(150,150,150); model(5); macro("execute positioned \$p run summon minecraft:iron_golem ~ ~1 ~") }
-
+            add(COMMAND_WAND){ name("shovel"); color(-7781357); model(19); macro("execute positioned \$p each ~-1 ~-1 ~-1 ~1 ~1 ~1 if block ~ ~ ~ #mineable/shovel run setblock ~ ~ ~ air destroy")}
             // Enchanted Book
             add(ENCHANTED_BOOK){
                 name("one_shot")
@@ -153,15 +153,15 @@ object CmdMastItemGroup {
             }
 
             creeper(BLAZE_SPAWN_EGG, "lightning", -1188790,
-                "for_at ~-\$n ~ ~-\$n ~\$n ~ ~\$n summon lightning_bolt"
+                "execute each ~-\$n ~ ~-\$n ~\$n ~ ~\$n run summon lightning_bolt"
             )
 
             creeper(FROG_SPAWN_EGG, "fire", -1674473,
-                "repeat \$+n summon minecraft:fireball ~ ~ ~ {Motion:[0.0,-1.0,0.0],ExplosionPower:3}"
+                "execute repeat \$+n run summon minecraft:fireball ~ ~ ~ {Motion:[0.0,-1.0,0.0],ExplosionPower:3}"
             )
 
             creeper(ZOMBIE_HORSE_SPAWN_EGG, "poison", -11112428,
-                "multi (effect give @e[distance=..3] minecraft:poison 20 \$n ; particle minecraft:dust 0 0.5 0 3 ~ ~ ~ 1.5 1.5 1.5 1 100)"
+                "multi (effect give @e[distance=..3] minecraft:poison 20 \$n ; particle minecraft:dust{color:[0.0,0.5,0.0],scale:3} ~ ~ ~ 1.5 1.5 1.5 1 100)"
             )
 
             creeper(ENDERMITE_SPAWN_EGG, "blindness", -12763847,
@@ -173,7 +173,7 @@ object CmdMastItemGroup {
             )
 
             creeper(ZOMBIE_SPAWN_EGG, "zombie", -11907030,
-                "repeat \$+n multi (repeat 3 summon zombie;repeat 1 summon skeleton)"
+                "execute repeat \$+n run multi (execute repeat 3 run summon zombie;execute repeat 1 run summon skeleton)"
             )
 
             creeper(VILLAGER_SPAWN_EGG, "breaker", -7707835,
@@ -182,17 +182,17 @@ object CmdMastItemGroup {
 
             creeper(
                 ENDERMAN_SPAWN_EGG, "dragon", -4914979,
-                "repeat \$+n summon dragon_fireball ~ ~ ~ {Motion:[0.,-1.,0.]}"
+                "execute repeat \$+n run summon dragon_fireball ~ ~ ~ {Motion:[0.,-1.,0.]}"
             )
 
             creeper(
                 CHICKEN_SPAWN_EGG, "firework", -1857861,
-                "repeat \$+n multi (particle minecraft:firework ~ ~1 ~ 0 0 0 0.2 300 ;particle minecraft:flash)"
+                "execute repeat \$+n run multi (particle minecraft:firework ~ ~1 ~ 0 0 0 0.2 300 ;particle minecraft:flash)"
             )
 
             creeper(
                 SPIDER_SPAWN_EGG, "super", -11532537,
-                "repeat \$+n repeat 5 summon minecraft:bat ~ ~ ~ {Passengers:[{id:\"tnt\",fuse:200}]}"
+                "execute repeat \$+n repeat 5 run summon minecraft:bat ~ ~ ~ {Passengers:[{id:\"tnt\",fuse:200}]}"
             )
 
             // Team
@@ -244,11 +244,11 @@ object CmdMastItemGroup {
                     page("/cmdmast", "Show the components of an items with a colored output, and get help about the mod", "/cmdmast example")
                     page("/get_color", "Get the color under the mouse pointer. Client-side only.", "/get_color")
                     page("/multi", "Execute multiple commands at once", "/multi (say Hello;say World)", "/multi (effect give @s speed;effect give @s jump_boost)")
-                    page("/repeat", "Repeat a command multiple times", "/repeat 5 say Hello","/repeat 5 summon pig")
+                    page("/execute repeat", "Repeat a command multiple times", "/execute repeat 5 run say Hello","/execute repeat 5 run summon pig")
                     page("/macro", "Debug macros, create items holding a macro, view the macro manual.", "/macro wand setblock \$p air destroy")
                     page("/fetch_nbt", "Fetch a nbt value from a external source through HTTP, NBT format is sort of a subset of JSON", """/fetchnbt "https://api.ipify.org?format=json" commandmaster:example ip tellraw @s {"storage":"commandmaster:example","nbt":"ip"}""")
                     page("/fix", "Fix a command block using a regex and replacement string.","""/fix ~ ~-1 ~ "say " "tellraw @s """")
-                    page("/for_at", "Call a command for each block in a rectangular zone.", """/for_at ~-2 ~-2 ~-2 ~2 ~2 ~2 particle minecraft:block_marker fire""", """/for_at ~-1 ~-1 ~-1 ~1 ~1 ~1 summon minecraft:shulker""")
+                    page("/execute each", "Call a command for each block in a rectangular zone.", """/execute each ~-2 ~-2 ~-2 ~2 ~2 ~2 run particle minecraft:block_marker fire""", """/execute each ~-1 ~-1 ~-1 ~1 ~1 ~1 run summon minecraft:shulker""")
                 }
             }
         })

@@ -1,6 +1,7 @@
 package commandmaster.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -26,6 +27,7 @@ import net.minecraft.command.argument.ItemStackArgumentType
 import net.minecraft.command.argument.NbtElementArgumentType
 import net.minecraft.item.ItemStack
 import net.minecraft.server.command.CommandManager
+import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.Text
 import net.minecraft.server.command.ServerCommandSource as SCS
 
@@ -244,6 +246,7 @@ object MacroCommands: CommandRegistrationCallback {
                 }
                 message
             }
+
 
         disp.register(MACRO)
     }

@@ -1,5 +1,6 @@
 package commandmaster.macro
 
+import com.mojang.brigadier.StringReader
 import commandmaster.macro.type.*
 import commandmaster.utils.biMapOf
 import net.minecraft.block.BlockState
@@ -55,5 +56,9 @@ interface MacroParamType{
             "+n" to IntParamType(1),
             "-n" to IntParamType(-1),
         )
+
+        inline fun parseParam(start: StringReader, finished: (MacroParamType,String)->Unit){
+
+        }
     }
 }
