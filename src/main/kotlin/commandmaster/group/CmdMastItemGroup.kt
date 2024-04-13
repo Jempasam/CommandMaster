@@ -6,6 +6,7 @@ import commandmaster.item.CmdMastItems.COMMAND_WAND
 import commandmaster.item.CmdMastItems.MACHINE_BLOCK
 import commandmaster.utils.builders.ComponentsBuilder
 import commandmaster.utils.builders.nbt
+import commandmaster.utils.builders.withStacks
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
 import net.minecraft.component.Component
 import net.minecraft.component.DataComponentType
@@ -42,8 +43,47 @@ object CmdMastItemGroup {
             add(COMMAND_WAND){ name("stonifier"); color(100,100,100); macro("setblock \$p minecraft:stone replace") }
             add(COMMAND_WAND){ name("creeper"); color(0,255,0); macro("summon minecraft:creeper \$p") }
             add(COMMAND_WAND){ name("tnt"); color(255,0,0); macro("summon minecraft:tnt \$p") }
-            add(COMMAND_WAND){ name("filler"); color(255,100,0); macro("fill \$p \$p \$b") }
-            add(COMMAND_WAND){ name("igniter"); color(100,200,70); macro("command wand execute as @e[type=commandmaster:macro_creeper,distance=..20] run data modify entity @s ignited set value 1b")}
+            add(COMMAND_WAND){ name("filler"); color(255,100,0); macro("fill \$1p \$2p \$0b") }
+            add(COMMAND_WAND){ name("igniter"); color(100,200,70); macro("eexecute as @e[type=commandmaster:macro_creeper,distance=..20] run data modify entity @s ignited set value 1b")}
+            add(COMMAND_WAND){
+                name("terraformer")
+                lore("terraformer.desc.1","terraformer.desc.2","terraformer.desc.3")
+                color(0,100,0)
+                model(21)
+                macro("execute positioned ~ ~1.5 ~ run shootitem %?% 3".withStacks(
+                    COMMAND_WAND to {
+                        macro("fill ~-\$0-n ~-\$0-n ~-\$0-n ~\$0-n ~\$0-n ~\$0-n \$0b")
+                        model(11)
+                        color(0,100,0)
+                    }
+                ))
+            }
+            add(COMMAND_WAND){
+                name("terraformer2")
+                lore("terraformer2.desc")
+                color(80,100,0)
+                model(21)
+                macro("execute positioned ~ ~1.5 ~ run shootitem %?% 3".withStacks(
+                    COMMAND_WAND to {
+                        macro("execute each ~-10 ~-10 ~-10 ~10 ~10 ~10 unless block ~ ~ ~ air if block ~ ~-1 ~ #replaceable run clone ~ ~ ~ ~ ~ ~ ~ ~-1 ~ replace move")
+                        model(11)
+                        color(80,100,0)
+                    }
+                ))
+            }
+            add(COMMAND_WAND){
+                name("terraformer3")
+                lore("terraformer3.desc.1","terraformer.desc.2","terraformer.desc.3")
+                color(0,100,80)
+                model(21)
+                macro("execute positioned ~ ~1.5 ~ run shootitem %?% 3".withStacks(
+                    COMMAND_WAND to {
+                        macro("execute each ~-\$0-n ~-\$0-n ~-\$0-n ~\$0-n ~\$0-n ~\$0-n unless block ~ ~ ~ air run setblock ~ ~ ~ \$0b")
+                        model(11)
+                        color(0,100,80)
+                    }
+                ))
+            }
 
             // Machine Block
             add(MACHINE_BLOCK){ name("use_command") }
@@ -55,12 +95,24 @@ object CmdMastItemGroup {
             add(SADDLE){ name("saddle"); macro("ride @s mount \$s"); ench(MACRO_ATTACK to 1) }
             add(BOW){ name("implosion"); macro("summon tnt \$p"); ench(MACRO_ATTACK to 1) }
             add(GOLDEN_AXE){ name("lightning"); macro("summon lightning_bolt \$p"); ench(MACRO_ATTACK to 1) }
+            add(COMMAND_WAND){
+                name("bomb"); color(40,20,20); model(11)
+                max_stack_size(16)
+                macro("execute positioned ~ ~1.5 ~ run shootitem %?%".withStacks(
+                    COMMAND_WAND to {
+                        name("bomb")
+                        color(40,20,20)
+                        model(11)
+                        macro("summon tnt ~ ~ ~ {Fuse:80}")
+                    }
+                ))
+            }
 
             // Tablet
             add(COMMAND_WAND){ name("xray"); color(255,255,0); model(19); macro("effect give @e[distance=1..30] minecraft:glowing 10") }
+            add(COMMAND_WAND){ name("shovel"); color(-7781357); model(19); macro("execute positioned \$p each ~-1 ~-1 ~-1 ~1 ~1 ~1 if block ~ ~ ~ #mineable/shovel run setblock ~ ~ ~ air destroy")}
             add(COMMAND_WAND){ name("snow"); color(255,255,255); model(5); macro("execute positioned \$p run summon minecraft:snow_golem ~ ~1 ~") }
             add(COMMAND_WAND){ name("iron"); color(150,150,150); model(5); macro("execute positioned \$p run summon minecraft:iron_golem ~ ~1 ~") }
-            add(COMMAND_WAND){ name("shovel"); color(-7781357); model(19); macro("execute positioned \$p each ~-1 ~-1 ~-1 ~1 ~1 ~1 if block ~ ~ ~ #mineable/shovel run setblock ~ ~ ~ air destroy")}
 
             // Enchanted Book
             add(ENCHANTED_BOOK){

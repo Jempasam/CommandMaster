@@ -4,6 +4,7 @@ import commandmaster.CommandMaster
 import commandmaster.components.CmdMastComponents
 import commandmaster.components.UpgraderComponent
 import commandmaster.macro.MacroCommand
+import commandmaster.utils.commands.toCommandArg
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap
 import net.minecraft.component.Component
 import net.minecraft.component.ComponentChanges
@@ -41,6 +42,7 @@ value class ComponentsBuilder(val stack: Target){
         override fun<T> set(type: DataComponentType<T>, value: T){ builder.add(type, value) }
     }
 
+    fun max_stack_size(size: Int) = stack.set(DataComponentTypes.MAX_STACK_SIZE, size)
     fun name(text: Text) = stack.set(DataComponentTypes.CUSTOM_NAME, text)
     fun name(id: String) = name(CommandMaster.translatable("example", id).styled{it.withItalic(false)})
     fun lore(vararg lore: Text) = stack.set(DataComponentTypes.LORE, LoreComponent(lore.toList()))
@@ -85,4 +87,20 @@ inline fun stack(item: Item, count: Int=1, builder: ComponentsBuilder.()->Unit):
     val stack=ItemStack(item,count)
     ComponentsBuilder.stack(stack).builder()
     return stack
+}
+
+fun String.withStacks(vararg stacks: Pair<Item,ComponentsBuilder.()->Unit>): String{
+    val parts=this.split("%?%")
+    val sb=StringBuilder()
+    sb.append(parts[0])
+    for(i in 1 until parts.size){
+        if(i-1 in stacks.indices){
+            val (item, builder)=stacks[i-1]
+            val stack=item.defaultStack
+            ComponentsBuilder.stack(stack).builder()
+            sb.append(stack.toCommandArg())
+        }
+        sb.append(parts[i])
+    }
+    return sb.toString()
 }

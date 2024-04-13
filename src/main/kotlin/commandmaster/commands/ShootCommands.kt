@@ -36,6 +36,7 @@ object ShootCommands: CommandRegistrationCallback {
             val entity= UseItemProjectileEntity(CmdMastEntities.ITEM_PROJECTILE, source.source.world)
             entity.setItem(stack)
             entity.setPosition(source.source.position)
+            entity.owner=source.source.entity
 
             val velocity=Vec3d.fromPolar(angle).multiply(strength)
             entity.setVelocity(velocity.x,velocity.y,velocity.z)

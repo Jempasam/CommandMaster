@@ -1,11 +1,13 @@
 package commandmaster.utils.components
 
 import net.minecraft.component.Component
+import net.minecraft.component.ComponentChanges
 import net.minecraft.component.DataComponentType
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 import net.minecraft.nbt.NbtOps
+import net.minecraft.registry.Registries
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 

@@ -88,6 +88,32 @@
 	{
       "predicate": {"custom_model_data": 21},
       "model": "commandmaster:item/activator_wand"
+    },
+	{
+      "predicate": {"custom_model_data": 22},
+      "model": "commandmaster:item/totem"
+    },
+	{
+      "predicate": {"custom_model_data": 23},
+      "model": "commandmaster:item/bucket"
+    },
+	{
+      "predicate": {"custom_model_data": 24},
+      "model": "commandmaster:item/crossbow"
+    },
+	{
+      "predicate": {"custom_model_data": 25},
+      "model": "commandmaster:item/pickaxe"
+    }
+	,
+	{
+      "predicate": {"custom_model_data": 26},
+      "model": "commandmaster:item/spawn_egg"
+    }
+	,
+	{
+      "predicate": {"custom_model_data": 27},
+      "model": "commandmaster:item/leather_book"
     }
   ]
 }

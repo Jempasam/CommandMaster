@@ -1,6 +1,7 @@
 package commandmaster.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.DoubleArgumentType
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
@@ -18,6 +19,7 @@ import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroCompletion
 import commandmaster.macro.MacroParamType
 import commandmaster.utils.commands.help
+import commandmaster.utils.commands.toCommandArg
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.command.CommandRegistryAccess
@@ -129,7 +131,30 @@ object MacroCommands: CommandRegistrationCallback {
             }
         )
 
-        /**
+        /*
+         * Thrown wand
+         */
+        val THROWN= literal<SCS>("thrown").then(
+            argument<SCS, _>("strength",DoubleArgumentType.doubleArg(0.0)).then(
+                argument<SCS,_>("macro", MacroCommandArgumentType).executes{
+                    val strength= DoubleArgumentType.getDouble(it,"strength")
+                    val macro= it.getArgument("macro",MacroCommand::class.java)
+
+                    val thrown=CmdMastItems.COMMAND_WAND.defaultStack
+                    thrown.set(CmdMastComponents.MACRO_HOLDER, macro)
+
+                    val thrower=CmdMastItems.COMMAND_WAND.defaultStack
+                    thrower.set(CmdMastComponents.MACRO_HOLDER, MacroCommand("execute anchored eyes positioned ^ ^ ^ run shootitem ${thrown.toCommandArg()} $strength"))
+
+                    it.source.player?.giveItemStack(thrower)
+                    1
+                }
+            )
+        )
+
+            /**argument<SCS, _>("macro", MacroCommandArgumentType).executes{
+            give_macro(it){CmdMastItems.COMMAND_WAND.defaultStack}
+            }
          * Fill the last parameter
          */
         fun<T> give_do(context: CommandContext<SCS>, getter: ()->T?, of: MacroParamType.(T)->String?): Int{
@@ -231,6 +256,7 @@ object MacroCommands: CommandRegistrationCallback {
             .then(THORNS)
             .then(ATTACK)
             .then(MACHINE)
+            .then(THROWN)
             .then(SHOW)
             .then(SELECT)
             .then(PARAMETER)

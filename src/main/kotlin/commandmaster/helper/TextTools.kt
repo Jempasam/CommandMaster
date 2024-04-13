@@ -14,11 +14,11 @@ fun Text.overflow(size: Int, suffix: String=""): MutableText{
     val ret=Text.empty()
     var size=size
     this.visit({ style, str ->
-        if(size>=0){
+        if(size>0){
             val cutted= min(str.length,size)
             ret.append(Text.literal(str.take(cutted)).setStyle(style))
-            if(cutted<str.length)ret.append(Text.literal("..."))
             size-=cutted
+            if(size<=0)ret.append(Text.literal("..."))
             Optional.empty()
         }
         else Optional.of(0)

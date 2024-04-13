@@ -1,8 +1,8 @@
 package commandmaster.item
 
 import commandmaster.CommandMaster
-import commandmaster.components.CmdMastComponents.MACRO_HOLDER
 import commandmaster.components.CmdMastComponents.MACRO_COMPLETION
+import commandmaster.components.CmdMastComponents.MACRO_HOLDER
 import commandmaster.macro.MacroCommand
 import commandmaster.macro.MacroCompletion
 import commandmaster.macro.MacroParamType
@@ -18,10 +18,10 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.screen.slot.Slot
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.*
+import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 
 class CommandWandItem(settings: Settings) : Item(settings) {
@@ -32,7 +32,8 @@ class CommandWandItem(settings: Settings) : Item(settings) {
         if(macro==null)return
 
         val command=macro.build(state).getOrElse{ return }
-        stack.damage(1,player,if(hand==Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
+        if(stack.isStackable)stack.decrementUnlessCreative(1,player)
+        else stack.damage(1,player,if(hand==Hand.MAIN_HAND) EquipmentSlot.MAINHAND else EquipmentSlot.OFFHAND)
         stack.remove(MACRO_COMPLETION)
         server?.let { MacroCommand.executeMultiline(it,player.commandSource.withMaxLevel(3).withSilent(),command) }
     }
@@ -109,4 +110,21 @@ class CommandWandItem(settings: Settings) : Item(settings) {
         super.appendTooltip(stack, context, tooltip, type)
         MacroUtils.appendTooltip(stack, context, tooltip, type)
     }
+
+    override fun getItemBarStep(stack: ItemStack): Int {
+        run{
+            if(stack.isDamageable())return@run
+            val macro=stack.get(MACRO_HOLDER) ?: return@run
+            val state=stack.get(MACRO_COMPLETION) ?: MacroCompletion()
+            return MathHelper.lerp(state.size.toFloat()/macro.parameters.size, 0, 13)
+        }
+        return super.getItemBarStep(stack)
+    }
+
+    override fun isItemBarVisible(stack: ItemStack): Boolean {
+        if(super.isItemBarVisible(stack))return true
+        return stack.get(MACRO_HOLDER)?.parameters?.size?.let { it>1 } ?: false
+    }
+
+
 }

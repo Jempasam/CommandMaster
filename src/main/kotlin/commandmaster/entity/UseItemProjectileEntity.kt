@@ -34,20 +34,22 @@ class UseItemProjectileEntity(entityType: EntityType<out UseItemProjectileEntity
             val player=PlayerSimulator(world,blockPos)
             player.yaw=yaw
             player.pitch=pitch
-            player.setPosition(pos)
+            player.setPosition(entityHitResult.pos)
             player.setStackInHand(Hand.MAIN_HAND,stack)
             val result=stack.useOnEntity(player,entity, Hand.MAIN_HAND)
         }
+        discard()
     }
 
-    override fun onCollision(hitResult: HitResult) {
-        super.onCollision(hitResult)
+    override fun onBlockHit(blockHitResult: BlockHitResult) {
+        super.onBlockHit(blockHitResult)
+        println("aaaa")
         val player=PlayerSimulator(world,blockPos)
         player.yaw=yaw
         player.pitch=pitch
-        player.setPosition(pos)
+        player.setPosition(blockHitResult.pos)
         player.setStackInHand(Hand.MAIN_HAND,stack)
-        val result=stack.useOnBlock(ItemUsageContext(player,Hand.MAIN_HAND, BlockHitResult(hitResult.pos,Direction.UP, BlockPos.ofFloored(hitResult.pos),true)))
+        val result=stack.useOnBlock(ItemUsageContext(player,Hand.MAIN_HAND, blockHitResult))
         discard()
     }
 }

@@ -11,6 +11,7 @@
   "example.commandmaster.fire": "Fire Starter",
   "example.commandmaster.aspirator": "Aspirator",
   "example.commandmaster.filler": "Filler",
+  "example.commandmaster.igniter": "Macro Creeper Igniter",
   "example.commandmaster.xray": "XRay Tablet",
   "example.commandmaster.snow": "Snow Invocation",
   "example.commandmaster.iron": "Iron Invocation",
@@ -18,6 +19,18 @@
   "example.commandmaster.implosion": "Implosion Bow",
   "example.commandmaster.lightning": "Lightning Axe",
   "example.commandmaster.saddle": "Magic Saddle",
+  "example.commandmaster.bomb": "Bomb",
+
+  "example.commandmaster.terraformer": "Terraformer",
+  "example.commandmaster.terraformer.desc.1": "Click to summon block of left hand item block",
+  "example.commandmaster.terraformer.desc.2": "Left hand item block is the block type",
+  "example.commandmaster.terraformer.desc.3": "Left hand item count is the block size",
+
+  "example.commandmaster.terraformer2": "Terraformer Graviter",
+  "example.commandmaster.terraformer2.desc": "Make the blocks fall down",
+
+  "example.commandmaster.terraformer3": "Terraformer Painter",
+  "example.commandmaster.terraformer3.desc.1": "Click to paint blocks of left hand item block",
 
   "example.commandmaster.one_shot": "Book of Death",
   "example.commandmaster.one_shot.desc": "One Shot",

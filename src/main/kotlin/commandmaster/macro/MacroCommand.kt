@@ -161,11 +161,26 @@ data class MacroCommand(val command: String): TooltipAppender {
 
     fun shortTextWith(params: MacroCompletion): MutableText{
         val result= Text.empty()
+        var size=30
         visit(params,
-            {part-> result.append(Text.literal(part))},
-            {value,type,_-> result.append(Text.literal(value).withColor(type.color))},
+            {part->
+                if(size>0){
+                    val removed=max(0,size-part.length)
+                    result.append(Text.literal(part.take(size)))
+                    size=removed
+                }
+            },
+            {value,type,_->
+                if(size>0){
+                    val removed=max(0,size-value.length)
+                    result.append(Text.literal(value.take(size)).withColor(type.color))
+                    size=removed
+                }
+                else result.append(Text.literal("[$]").withColor(type.color))
+            },
             {param,_-> result.append(Text.literal("$").withColor(param.color))}
         )
+        if(size<=0)result.append("...")
         return result
     }
 
