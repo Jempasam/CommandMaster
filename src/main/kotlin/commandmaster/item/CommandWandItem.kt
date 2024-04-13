@@ -26,7 +26,7 @@ import net.minecraft.world.World
 
 class CommandWandItem(settings: Settings) : Item(settings) {
 
-    fun tryToCast(player: ServerPlayerEntity, server:MinecraftServer?, hand: Hand, stack: ItemStack) {
+    fun tryToCast(player: PlayerEntity, server:MinecraftServer?, hand: Hand, stack: ItemStack) {
         val macro=stack.get(MACRO_HOLDER)
         val state=stack.get(MACRO_COMPLETION) ?: MacroCompletion()
         if(macro==null)return
@@ -53,7 +53,7 @@ class CommandWandItem(settings: Settings) : Item(settings) {
     }
 
     fun<T> getAndCast(player:PlayerEntity?, world: World, stack: ItemStack, hand: Hand, value: T, converter: MacroParamType.(T)->String?): ActionResult {
-        if(player !is ServerPlayerEntity)return ActionResult.SUCCESS
+        if(player !is PlayerEntity)return ActionResult.SUCCESS
         if(world !is ServerWorld)return ActionResult.SUCCESS
 
         val result=fill(stack,value,player::sendMessage,converter)

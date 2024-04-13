@@ -1,6 +1,5 @@
 package commandmaster.commands
 
-import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.*
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.*
@@ -25,21 +24,19 @@ import net.minecraft.command.argument.NbtPathArgumentType
 import net.minecraft.component.Component
 import net.minecraft.nbt.NbtOps
 import net.minecraft.registry.Registries
-import net.minecraft.server.command.ServerCommandSource as SCS
 import net.minecraft.text.Text
 import net.minecraft.util.Colors
-import net.minecraft.util.math.Vec3d
 import java.net.URI
 import java.nio.charset.Charset
 import kotlin.jvm.optionals.getOrNull
-import kotlin.math.abs
-import kotlin.math.min
+import net.minecraft.server.command.ServerCommandSource as SCS
 
 
 object CmdMastCommands {
     init{
         CommandRegistrationCallback.EVENT.register(MacroCommands)
         CommandRegistrationCallback.EVENT.register(CmdMastExecuteCommands)
+        CommandRegistrationCallback.EVENT.register(ShootCommands)
         CommandRegistrationCallback.EVENT.register{ disp, reg, man ->
 
             // Action that give item

@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import java.util.*
 
-class PlayerSimulator(world: World, pos: BlockPos): PlayerEntity(world, pos, 0f, GameProfile(UUID.randomUUID(),"herobrine"))
+class PlayerSimulator(world: World, pos: BlockPos): PlayerEntity(world, pos, 0f, GameProfile(UUID.randomUUID(),"[Stub of samdemont06]"))
 {
     override fun isSpectator() = false
 

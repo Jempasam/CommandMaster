@@ -15,4 +15,4 @@ class DataTrakerProperty<T>(val data: TrackedData<T>) {
 
 }
 
-fun dataTracked(data: TrackedData<Int>) = DataTrakerProperty(data)
+fun<T> dataTracked(data: TrackedData<T>) = DataTrakerProperty(data)

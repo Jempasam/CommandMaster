@@ -1,48 +1,26 @@
 package commandmaster.group
 
 import commandmaster.CommandMaster
-import commandmaster.components.CmdMastComponents
-import commandmaster.components.UpgraderComponent
-import commandmaster.enchantments.CmdMastEnchantments
 import commandmaster.enchantments.CmdMastEnchantments.MACRO_ATTACK
-import commandmaster.item.CmdMastItems
 import commandmaster.item.CmdMastItems.COMMAND_WAND
-import commandmaster.macro.MacroCommand
+import commandmaster.item.CmdMastItems.MACHINE_BLOCK
 import commandmaster.utils.builders.ComponentsBuilder
 import commandmaster.utils.builders.nbt
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
-import net.minecraft.command.argument.ItemStackArgumentType
 import net.minecraft.component.Component
-import net.minecraft.component.ComponentChanges
-import net.minecraft.component.ComponentHolder
 import net.minecraft.component.DataComponentType
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.component.type.CustomModelDataComponent
-import net.minecraft.component.type.DyedColorComponent
-import net.minecraft.component.type.ItemEnchantmentsComponent
-import net.minecraft.component.type.LoreComponent
-import net.minecraft.component.type.WrittenBookContentComponent
-import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.Enchantments
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
 import net.minecraft.item.Items.*
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
-import net.minecraft.registry.tag.ItemTags
-import net.minecraft.registry.tag.TagKey
-import net.minecraft.scoreboard.Team
-import net.minecraft.server.command.TellRawCommand
-import net.minecraft.text.*
+import net.minecraft.registry.tag.ItemTags.WEAPON_ENCHANTABLE
+import net.minecraft.text.ClickEvent
+import net.minecraft.text.Text
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Formatting.*
-import net.minecraft.util.math.ColorHelper
-import net.minecraft.util.math.ColorHelper.Argb
-import java.text.Normalizer.Form
 
 object CmdMastItemGroup {
 
@@ -68,10 +46,10 @@ object CmdMastItemGroup {
             add(COMMAND_WAND){ name("igniter"); color(100,200,70); macro("command wand execute as @e[type=commandmaster:macro_creeper,distance=..20] run data modify entity @s ignited set value 1b")}
 
             // Machine Block
-            add(CmdMastItems.MACHINE_BLOCK){ name("use_command") }
-            add(CmdMastItems.MACHINE_BLOCK){ name("breaker"); color(255,0,0); macro("setblock ^ ^ ^1 air destroy") }
-            add(CmdMastItems.MACHINE_BLOCK){ name("fire"); color(255,100,0); macro("setblock ^ ^ ^1 fire keep") }
-            add(CmdMastItems.MACHINE_BLOCK){ name("aspirator"); color(200,210,255); macro("execute if block ^ ^ ^1 #minecraft:replaceable run multi (clone ^ ^ ^2 ^ ^ ^2 ^ ^ ^1 replace move;playsound minecraft:block.piston.contract ambient @a ~ ~ ~)") }
+            add(MACHINE_BLOCK){ name("use_command") }
+            add(MACHINE_BLOCK){ name("breaker"); color(255,0,0); macro("setblock ^ ^ ^1 air destroy") }
+            add(MACHINE_BLOCK){ name("fire"); color(255,100,0); macro("setblock ^ ^ ^1 fire keep") }
+            add(MACHINE_BLOCK){ name("aspirator"); color(200,210,255); macro("execute if block ^ ^ ^1 #minecraft:replaceable run multi (clone ^ ^ ^2 ^ ^ ^2 ^ ^ ^1 replace move;playsound minecraft:block.piston.contract ambient @a ~ ~ ~)") }
 
             // Attack
             add(SADDLE){ name("saddle"); macro("ride @s mount \$s"); ench(MACRO_ATTACK to 1) }
@@ -83,11 +61,12 @@ object CmdMastItemGroup {
             add(COMMAND_WAND){ name("snow"); color(255,255,255); model(5); macro("execute positioned \$p run summon minecraft:snow_golem ~ ~1 ~") }
             add(COMMAND_WAND){ name("iron"); color(150,150,150); model(5); macro("execute positioned \$p run summon minecraft:iron_golem ~ ~1 ~") }
             add(COMMAND_WAND){ name("shovel"); color(-7781357); model(19); macro("execute positioned \$p each ~-1 ~-1 ~-1 ~1 ~1 ~1 if block ~ ~ ~ #mineable/shovel run setblock ~ ~ ~ air destroy")}
+
             // Enchanted Book
             add(ENCHANTED_BOOK){
                 name("one_shot")
                 lore("one_shot.desc")
-                giving(ItemTags.WEAPON_ENCHANTABLE){
+                giving(WEAPON_ENCHANTABLE){
                     lore("one_shot.desc")
                     ench(MACRO_ATTACK to 1)
                     macro("kill \$s")
@@ -97,7 +76,7 @@ object CmdMastItemGroup {
             add(ENCHANTED_BOOK){
                 name("pig")
                 lore("pig.desc")
-                giving(ItemTags.WEAPON_ENCHANTABLE){
+                giving(WEAPON_ENCHANTABLE){
                     lore("pig.desc")
                     ench(MACRO_ATTACK to 1)
                     macro("execute at \$s summon pig run ride \$s mount @s")
@@ -107,7 +86,7 @@ object CmdMastItemGroup {
             add(ENCHANTED_BOOK){
                 name("slowness")
                 lore("slowness.desc")
-                giving(ItemTags.WEAPON_ENCHANTABLE){
+                giving(WEAPON_ENCHANTABLE){
                     lore("slowness.desc")
                     ench(MACRO_ATTACK to 1)
                     macro("effect give \$s minecraft:slowness 10 1")
@@ -117,7 +96,7 @@ object CmdMastItemGroup {
             add(ENCHANTED_BOOK){
                 name("poisoned")
                 lore("poisoned.desc")
-                giving(ItemTags.WEAPON_ENCHANTABLE){
+                giving(WEAPON_ENCHANTABLE){
                     lore("poisoned.desc")
                     ench(MACRO_ATTACK to 1)
                     macro("effect give \$s minecraft:poison 8")

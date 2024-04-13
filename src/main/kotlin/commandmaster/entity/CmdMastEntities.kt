@@ -20,6 +20,8 @@ object CmdMastEntities {
     val SMART_ZOMBIE= register("smart_zombie", ::SmartZombieEntity, SpawnGroup.MONSTER) { dimensions(0.6f,1.95f); maxTrackingRange(7) }
         .attributes(EntityType.ZOMBIE)
 
+    val ITEM_PROJECTILE= register("item_projectile",::UseItemProjectileEntity, SpawnGroup.MISC) { dimensions(0.25f,0.25f); maxTrackingRange(4) }
+
     inline fun<T: Entity> register(id: String, factory: EntityType.EntityFactory<T>, group: SpawnGroup, builder: EntityType.Builder<T>.()->Unit): EntityType<T> {
         val build=EntityType.Builder.create(factory, group)
         build.builder()

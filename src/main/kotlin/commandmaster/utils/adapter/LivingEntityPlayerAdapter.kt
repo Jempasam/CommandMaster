@@ -24,6 +24,12 @@ import java.util.*
 
 
 inline fun LivingEntity.asPlayer(action: (ServerPlayerEntity)->Unit){
+    // If is player
+    if(this is ServerPlayerEntity){
+        action(this)
+        return
+    }
+
     // Keep old adapter or create a new adapter
     var current_adapter=_adapter
     if(current_adapter==null || current_adapter.world!=this.world){
