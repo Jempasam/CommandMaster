@@ -1,6 +1,7 @@
 package commandmaster.commands.arguments
 
 import com.google.gson.JsonObject
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
@@ -12,15 +13,28 @@ import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.command.CommandSource
 import net.minecraft.command.argument.serialize.ArgumentSerializer
 import net.minecraft.command.argument.serialize.ArgumentSerializer.ArgumentTypeProperties
+import net.minecraft.entity.Entity
 import net.minecraft.network.PacketByteBuf
+import net.minecraft.screen.ScreenTexts
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.command.CommandOutput
 import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.server.function.FunctionLoader
+import net.minecraft.server.world.ServerWorld
+import net.minecraft.util.math.Vec2f
+import net.minecraft.util.math.Vec3d
 import java.util.concurrent.CompletableFuture
 
-object MultiCommandArgumentType: ArgumentType<List<String>> {
+class MultiCommandArgumentType(val disp: CommandDispatcher<ServerCommandSource>?): ArgumentType<List<String>> {
     override fun parse(reader: StringReader): List<String> {
+        // Parse text
         reader.expect('(')
-        val commands=reader.readStringUntil(')')
-        return commands.split(";").map { it.trim() }
+        val commands=reader.readStringUntil(')').split(";").map { it.trim() }
+
+        // Parse commands
+        // val serverCommandSource = ServerCommandSource(CommandOutput.DUMMY, Vec3d.ZERO, Vec2f.ZERO, null as ServerWorld?, 0, "", ScreenTexts.EMPTY, null as MinecraftServer?, null as Entity?)
+        // commands.forEach { disp?.parse(it, serverCommandSource)?.exceptions?.values?.first { throw it } }
+        return commands
     }
 
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
@@ -61,7 +75,7 @@ object MultiCommandArgumentType: ArgumentType<List<String>> {
     }
 
     object Properties: ArgumentTypeProperties<MultiCommandArgumentType>{
-        override fun createType(commandRegistryAccess: CommandRegistryAccess)= MultiCommandArgumentType
+        override fun createType(commandRegistryAccess: CommandRegistryAccess)= MultiCommandArgumentType(null)
         override fun getSerializer() = Serializer
     }
 

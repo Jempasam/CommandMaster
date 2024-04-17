@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "commandmaster:item/bucket",
+	"layer1": "commandmaster:item/bucket_overlay"
+  }
+}

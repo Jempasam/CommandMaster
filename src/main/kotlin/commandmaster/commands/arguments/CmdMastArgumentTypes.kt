@@ -7,7 +7,7 @@ import net.minecraft.command.argument.serialize.ArgumentSerializer
 
 object CmdMastArgumentTypes {
 
-    val MULTI_COMMAND = register("multi_command", MultiCommandArgumentType.javaClass, MultiCommandArgumentType.Serializer)
+    val MULTI_COMMAND = register("multi_command", MultiCommandArgumentType::class.java, MultiCommandArgumentType.Serializer)
     val MACRO_COMMAND = register("macro", MacroCommandArgumentType.javaClass, MacroCommandArgumentType.Serializer)
 
     fun <Y: ArgumentType<*>, T: ArgumentSerializer<Y,*>> register(id: String, clazz: Class<Y>, type: T): T{

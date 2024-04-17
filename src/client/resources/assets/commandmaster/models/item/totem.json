@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "commandmaster:item/totem",
+	"layer1": "commandmaster:item/totem_overlay"
+  }
+}

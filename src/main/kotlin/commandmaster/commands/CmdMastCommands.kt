@@ -41,7 +41,6 @@ object CmdMastCommands {
 
             // Action that give item
 
-
             val EXAMPLE=literal<SCS>("example").executes{
                 val player=it.source.player
                 if(player!=null){
@@ -206,7 +205,7 @@ object CmdMastCommands {
             }
 
             val MULTI=literal<SCS>("multi").then(
-                argument<SCS,_>("commands",MultiCommandArgumentType).executes{
+                argument<SCS,_>("commands",MultiCommandArgumentType(disp)).executes{
                     val commands=it.getArgument("commands",List::class.java) as List<String>
                     for(command in commands){
                         println(command)
