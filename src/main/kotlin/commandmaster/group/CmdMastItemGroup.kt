@@ -84,6 +84,19 @@ object CmdMastItemGroup {
                     }
                 ))
             }
+            add(COMMAND_WAND){
+                name("terraformer4")
+                lore("terraformer4.desc.1","terraformer.desc.2","terraformer.desc.3")
+                color(0,40,0)
+                model(21)
+                macro("execute positioned ~ ~1.5 ~ run shootitem %?% 3".withStacks(
+                    COMMAND_WAND to {
+                        macro("fill ~-\$0-n ~-\$0-n ~-\$0-n ~\$0-n ~\$0-n ~\$0-n air replace \$0b")
+                        model(11)
+                        color(0,40,0)
+                    }
+                ))
+            }
 
             // Machine Block
             add(MACHINE_BLOCK){ name("use_command") }

@@ -32,6 +32,9 @@
   "example.commandmaster.terraformer3": "Terraformer Painter",
   "example.commandmaster.terraformer3.desc.1": "Click to paint blocks of left hand item block",
 
+  "example.commandmaster.terraformer4": "Terraformer Eraser",
+  "example.commandmaster.terraformer4.desc.1": "Click to remove blocks of left hand item block",
+
   "example.commandmaster.one_shot": "Book of Death",
   "example.commandmaster.one_shot.desc": "One Shot",
   "example.commandmaster.pig": "Book of Bacon",
